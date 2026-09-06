@@ -1,7 +1,7 @@
 ---
 task_id: 20260905-binary-extension-field-rewrite
 route: pro-write-review
-status: PERMISSION_REQUIRED
+status: R01_APPLIED
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 integrity: fast
@@ -67,8 +67,10 @@ ChatGPT Pro 自行判断现稿的主线问题并写出完整替换文件；全�
 
 # 当前阶段
 
-PERMISSION_REQUIRED：三份请求已提交并推送，checkpoint 为 9fda135b90e43ed993bd8282a8bb3a338aa16b21。ChatGPT 界面确认显示 6 Pro；R01 提示已填入输入框，但发送按钮动作被自动审批拒绝，未开始 R01。
+R01_RUNNING：2026-09-06 用户对“允许 ChatGPT Pro 通过已连接 GitHub App 读取请求及列明必读文件用于重写和独立审查”明确回复“确认允许”，此前权限阻塞已解决。
 
-自动审批原因为：发送提示会授权 ChatGPT/GitHub App 读取并处理私有仓库中的笔记及相关文件；用户要求 Pro 重写，但未明确授权将这些具体私有数据传输给该外部目的地。需用户明确允许 ChatGPT Pro 通过已连接的 GitHub App 读取本任务请求与 PRO_REQUEST.md 列出的必读文件，用于 R01 重写和 fresh R02 审查。
+R01 已成功发送；ChatGPT 页面显示 6 Pro / Pro 思考中。使用原固定 checkpoint 9fda135b90e43ed993bd8282a8bb3a338aa16b21。
 
-等待该具体数据／目的地授权，不通过其它浏览器或间接执行重试。目标正文、索引、canonical、其它任务修改均未改变。
+作者会话：https://chatgpt.com/c/6a9cc19c-f600-83e9-a94c-6df9c489bded
+
+R01 完整响应已返回 COMPLETE，binding 和 allowlist 校验通过；895 行候选已经解析到 staging，完成两处商记号间距修复，通过 Obsidian 数学检查后应用。正文和推理均来自 Pro。下一步：推送应用提交，并在全新 Pro 会话以该提交为固定 checkpoint 执行 R02。
