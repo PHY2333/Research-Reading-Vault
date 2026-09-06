@@ -1,7 +1,7 @@
 ---
 task_id: 20260905-binary-extension-field-rewrite
 route: pro-write-review
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 integrity: fast
@@ -67,10 +67,13 @@ ChatGPT Pro 自行判断现稿的主线问题并写出完整替换文件；全�
 
 # 当前阶段
 
-R01_RUNNING：2026-09-06 用户对“允许 ChatGPT Pro 通过已连接 GitHub App 读取请求及列明必读文件用于重写和独立审查”明确回复“确认允许”，此前权限阻塞已解决。
+DONE：2026-09-06 R01 完整稿已应用并推送至 f186fd3ae9a1bca4324f04d60b7846d389fc9e57。全新 ChatGPT Pro 会话对该固定提交执行 R02，返回 REVIEW_PASS；task、request、独立 binding、repository、branch、commit 和 END_RESPONSE 均通过解析校验。
 
-R01 已成功发送；ChatGPT 页面显示 6 Pro / Pro 思考中。使用原固定 checkpoint 9fda135b90e43ed993bd8282a8bb3a338aa16b21。
+最终目标文件通过 Obsidian 数学检查，git diff --check 通过；两处 wikilink 唯一解析，三项脚注均有定义，外部来源版本与引用用途已核对。Codex 只修复两处商记号 LaTeX 间距，未改变 Pro 教学组织或数学论证。
 
-作者会话：https://chatgpt.com/c/6a9cc19c-f600-83e9-a94c-6df9c489bded
+- R01 作者会话：https://chatgpt.com/c/6a9cc19c-f600-83e9-a94c-6df9c489bded
+- R02 审查会话：https://chatgpt.com/c/6a9cc82e-747c-83e8-80b7-23995d668593
 
-R01 完整响应已返回 COMPLETE，binding 和 allowlist 校验通过；895 行候选已经解析到 staging，完成两处商记号间距修复，通过 Obsidian 数学检查后应用。正文和推理均来自 Pro。下一步：推送应用提交，并在全新 Pro 会话以该提交为固定 checkpoint 执行 R02。
+用户已于 2026-09-06 明确确认本任务列明文件到 ChatGPT Pro/GitHub App 的两轮读取授权。该授权用于完成本任务；此前权限暂停记录保留在 Git 历史。
+
+任务分支和独立工作树保留，主分支未合并。下一步唯一动作：用户阅读已审查新版后决定是否合并 main。
