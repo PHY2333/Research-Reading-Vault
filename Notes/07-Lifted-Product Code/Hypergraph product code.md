@@ -440,6 +440,94 @@ $$
 
 这意味着 $A$ 改变第一因子的坐标 $j\to i$，而 $I_{m_B}$ 强制第二因子的坐标保持 $\alpha=\alpha'$。后面所有“固定哪个坐标”的结论都来自这种 delta，而不是从图形方向猜出。
 
+### 从张量积的泛性质到 Kronecker 矩阵
+
+上面的指标公式为什么对应“分别作用于两个因子”？这里要区分三个对象：向量空间 $V\otimes W$、纯张量 $x\otimes y$，以及作用在张量积空间上的线性映射 $T\otimes S$。Kronecker 积是最后这张映射选基后的矩阵表示。
+
+沿用上一小节的尺寸，令
+
+$$
+T:V=\mathbb F_2^c\longrightarrow V'=\mathbb F_2^r,
+\qquad
+S:W=\mathbb F_2^t\longrightarrow W'=\mathbb F_2^s,
+$$
+
+其标准基下的矩阵分别为 $M,N$。我们希望得到线性映射 $T\otimes S$，把 $x\otimes y$ 送到 $T(x)\otimes S(y)$。但一般张量的纯张量分解不唯一，例如
+
+$$
+(x_1+x_2)\otimes y=x_1\otimes y+x_2\otimes y.
+$$
+
+因此，仅给出纯张量的像还不够；必须保证按不同分解计算时得到同一个结果。
+
+张量积的泛性质恰好保证这一点：对任意向量空间 $E$，每张双线性映射 $g:V\times W\to E$ 都唯一分解为一张线性映射 $\widetilde g:V\otimes W\to E$，满足 $\widetilde g(x\otimes y)=g(x,y)$。在这里取 $E=V'\otimes W'$，并定义
+
+$$
+\beta:V\times W\longrightarrow V'\otimes W',
+\qquad
+\beta(x,y)=T(x)\otimes S(y).
+$$
+
+因为 $T,S$ 线性，且目标空间中的张量符号对两个变量分别线性，所以 $\beta$ 双线性。例如
+
+$$
+\beta(x_1+x_2,y)
+=(T(x_1)+T(x_2))\otimes S(y)
+=\beta(x_1,y)+\beta(x_2,y),
+$$
+
+第二个变量的加法与两个变量的标量关系也同样成立。于是泛性质给出唯一的线性映射
+
+$$
+T\otimes S:V\otimes W\longrightarrow V'\otimes W',
+\qquad
+(T\otimes S)(x\otimes y)=T(x)\otimes S(y).
+$$
+
+这一步解决了良定义性：线性扩张后的结果不依赖所选的纯张量分解。这里使用的正是 [[张量积与直和泛性质的 HGP-Künneth 接口#空间、纯张量与诱导映射是三个层次|空间、纯张量与诱导映射的区分]] 中的构造；接下来把它用于上一小节的矩阵元。
+
+分别记 $V,W$ 的标准基为 $e_b$、$f_v$，$V',W'$ 的标准基为 $e'_a$、$f'_u$，其中 $b\in[c]$、$v\in[t]$、$a\in[r]$、$u\in[s]$。按矩阵的列表示基向量的像，
+
+$$
+T(e_b)=\sum_{a=1}^r M_{a,b}e'_a,
+\qquad
+S(f_v)=\sum_{u=1}^s N_{u,v}f'_u.
+$$
+
+因此
+
+$$
+\begin{aligned}
+(T\otimes S)(e_b\otimes f_v)
+&=T(e_b)\otimes S(f_v)\\
+&=\sum_{a=1}^r\sum_{u=1}^s
+M_{a,b}N_{u,v}\,e'_a\otimes f'_u.
+\end{aligned}
+$$
+
+源空间的张量积基为 $e_b\otimes f_v$，目标空间的张量积基为 $e'_a\otimes f'_u$。两边都按“固定第一指标，让第二指标先变化”的顺序排列，则输入 $(b,v)$ 是第 $(b-1)t+v$ 列，输出 $(a,u)$ 是第 $(a-1)s+u$ 行。上式给出的矩阵元正是 $M_{a,b}N_{u,v}$；固定 $a,b$ 而让 $u,v$ 变化，就得到一个完整的块 $M_{a,b}N$。所以
+
+$$
+[T\otimes S]
+=M\otimes N
+=\begin{pmatrix}
+M_{1,1}N&\cdots&M_{1,c}N\\
+\vdots&\ddots&\vdots\\
+M_{r,1}N&\cdots&M_{r,c}N
+\end{pmatrix}.
+$$
+
+这说明“把 $M$ 的每个元素替换成相应倍数的 $N$”来自映射在张量积基上的展开。**Kronecker 积的矩阵公式不是泛性质本身，而是泛性质诱导出的映射在指定基序下的坐标表达。**
+
+同一个构造也解释了后文使用的乘法规则。若 $U:V_0\to V$、$R:W_0\to W$ 是可复合的线性映射，那么
+
+$$
+(T\otimes S)\circ(U\otimes R)
+=(T\circ U)\otimes(S\circ R),
+$$
+
+因为两边都把每个 $x_0\otimes y_0$ 送到 $T(U(x_0))\otimes S(R(y_0))$，而纯张量张成 $V_0\otimes W_0$。这称为张量积的函子性；在相容的张量积基下，它就是 $(M\otimes N)(P\otimes Q)=(MP)\otimes(NQ)$，其中 $P,Q$ 分别是 $U,R$ 的矩阵。回到 HGP，取其中一个映射为恒等映射，就得到下一步所需的“只沿一个因子作用”的 Kronecker 块。
+
 ### $\partial_1$ 的第一块：作用于 $Q_1=A_1\otimes B_0$
 
 先取第一物理扇区中的基向量
