@@ -1,5 +1,7 @@
-# Obsidian local app state and configuration
-.obsidian/
+# Obsidian workspace layouts specific to each device
+/.obsidian/workspace.json
+/.obsidian/workspace-mobile.json
+/.obsidian/workspaces.json
 
 # Local agent instructions
 .AGENTS
