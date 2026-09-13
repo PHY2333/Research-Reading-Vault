@@ -1,7 +1,7 @@
 ---
 task_id: 20260913-diagonal-clifford-hierarchy
 route: pro-write-review
-status: PREPARE
+status: CHECKPOINT_PUSHED
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md
 integration_files:
@@ -88,4 +88,6 @@ R02 通过后，Codex 在 `Notes/00-index.md` 第 8 条的二元扩域链接后�
 
 # 当前阶段
 
-PREPARE：请求与独立审查要求已生成，待创建 GitHub checkpoint 并交给 Pro。
+CHECKPOINT_PUSHED：用户再次明确要求重试后，任务分支已成功推送至 GitHub，本地请求提交为 `862e000e9e7ccf5da4a10a368aa460e290d9f126`。认证阻塞已解除。现在继续自动执行 R01 写作和 fresh R02 审查。
+
+此前两次推送因终端 GitHub HTTPS 凭据不可用而失败，均按仓库规则暂停；本次重试已成功。独立工作树和原 main 工作树的隔离保持不变。
