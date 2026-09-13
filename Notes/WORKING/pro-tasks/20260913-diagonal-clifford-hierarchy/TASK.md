@@ -1,7 +1,7 @@
 ---
 task_id: 20260913-diagonal-clifford-hierarchy
 route: pro-write-review
-status: CHECKPOINT_PUSHED
+status: R01_APPLIED
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md
 integration_files:
@@ -88,6 +88,8 @@ R02 通过后，Codex 在 `Notes/00-index.md` 第 8 条的二元扩域链接后�
 
 # 当前阶段
 
-CHECKPOINT_PUSHED：用户再次明确要求重试后，任务分支已成功推送至 GitHub，本地请求提交为 `862e000e9e7ccf5da4a10a368aa460e290d9f126`。认证阻塞已解除。现在继续自动执行 R01 写作和 fresh R02 审查。
+R01_APPLIED：作者在 6 Pro 模式返回 COMPLETE，完整文件已通过 binding、固定 repository／branch／commit、路径 allowlist 与 END_RESPONSE 验证，并应用到目标文件。作者 checkpoint 为 `b66e7ae1f47e7129108ce7ee80ba8381abfdf9d6`，会话为 https://chatgpt.com/c/6aa69bad-4054-83e9-b140-2c9a8c34f3b7 。下一阶段为全新 Pro 会话 R02。
 
-此前两次推送因终端 GitHub HTTPS 凭据不可用而失败，均按仓库规则暂停；本次重试已成功。独立工作树和原 main 工作树的隔离保持不变。
+正文初次 Obsidian 数学检查通过，没有进行正文格式或语义改写。浏览器“复制回复”把文件外围 fence 序列化为三反引号；捕获后只恢复协议要求的五反引号外层及 END_FILE 紧邻布局，文件内容不变。系统 Python 版本不支持现有 parser 的 Path.write_text(newline=...)，已使用应用提供的 Python runtime 正常运行，无需修改 parser。
+
+此前两次 push 因 GitHub HTTPS 凭据不可用而暂停。用户再次授权重试后推送成功，认证阻塞已解除。任务继续在独立工作树执行，main 原有改动保持隔离。

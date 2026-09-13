@@ -2,20 +2,26 @@
 
 - task_id: 20260913-diagonal-clifford-hierarchy
 - request_id: R01
-- local_request_commit: 862e000e9e7ccf5da4a10a368aa460e290d9f126
-- checkpoint_push: failed — GitHub HTTPS username credential unavailable in this terminal
-- Pro status: not sent
-- binding_verified: not applicable
-- applied_files: none
-- Obsidian_math_check: not applicable; no reader-visible candidate exists
-- request_git_diff_check: pass before initial commit
-- formal_note_created: false
-- integration_applied: false
-- pause_rule: Notes/AGENTS.md §9, push 失败即停止
-- retained: isolated worktree, task branch, R01/R02 requests, local failure reports
+- checkpoint_commit: b66e7ae1f47e7129108ce7ee80ba8381abfdf9d6
+- Pro status: COMPLETE
+- binding_verified: true
+- allowlist_verified: true
+- applied_files: Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md
+- author_session: https://chatgpt.com/c/6aa69bad-4054-83e9-b140-2c9a8c34f3b7
+- author_mode: 6 Pro
 
-当前没有 Pro 响应，因此未创建 raw、staging 或 FAILURES 响应文件。没有进行教学性、数学性或格式性正文改写。
+## Transport 与格式
 
-用户明确授权重试后，再次推送同一分支仍失败：`fatal: could not read Username for 'https://github.com': Device not configured`，退出码 128。未应用任何正式文件。
+浏览器“复制回复”的 Markdown 共 15447 字符、703 行；已完整捕获到临时目录。复制接口将文件外层 fence 表示为三反引号，Codex仅恢复协议所需五反引号和 END_FILE 前的外层布局，未改变正文内容。严格 parser 校验通过，返回 COMPLETE 和唯一目标路径。
 
-用户再次要求重试后，任务分支推送成功；先前认证阻塞已解除。继续自动执行 R01，暂无正文可应用。
+系统 Python 不支持 parser 已有的 Path.write_text(newline=...) 参数，切换为应用提供的 Python runtime 后成功；未修改 parser。正文初次 Obsidian 数学检查即通过，无需正文格式修复，未进行教学、数学或语义性改写。staging 与目标内容逐字节相同。
+
+## 内容与集成
+
+完整稿分别建立所有 Pauli 的层级上界与排除下一低层的下界，包含全局相位、零支持、m=1、r=1 边界及六个标准门例子。三处 wikilink 均唯一解析；两项来源脚注已定义；无待核对、TODO：补引用、待补推导标记。独立数学预检与 fresh Pro R02 将继续核验。
+
+索引与 canonical 按 TASK 中预定文字等待 R02 通过后机械集成。两份索引的初始格式检查发现 canonical 旧行 219 的商记号被 checker 误报为 slash opener，本任务新增正文无此问题。
+
+## Git
+
+此前两次 push 认证失败均按规则暂停；用户再次授权重试后已经成功。当前在任务分支 commit/push R01，随后以该新提交运行 fresh R02，不自动合并 main。
