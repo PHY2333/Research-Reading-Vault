@@ -125,3 +125,18 @@
 - 翻译计划：全文翻译
 - 当前全文译本：[S008 全文译本](../Translations/S008.full.zh-CN.md)
 - 局部摘译：无
+
+### S009
+
+- 类型：paper
+- 题名：*Computing 256-bit elliptic curve discrete logarithms in 26 days on a fault-tolerant trapped-ion quantum computer with 20,000 qubits*
+- 作者或编者：Thomas Häner；Felix Tripier；Jacob Young；Michael Naehrig；Andrii Maksymov；Safwan Alam；Dmitri Maslov；Matthew Parrott；Yvette de Sereville；Jordan Sullivan；Mark Webster；Nicolas Delfosse；John Gamble；Martin Roetteler
+- 年份：2026
+- 外部标识：arXiv:2609.05625；DOI: 10.48550/arXiv.2609.05625
+- 本地文件：[S009_2026_Haner_elliptic_curve_discrete_logarithms.pdf](S009_2026_Haner_elliptic_curve_discrete_logarithms.pdf)
+- 版本或版次：arXiv v1（论文题头日期：2026-09-09）
+- 阅读状态：已通读
+- 主文献笔记：无
+- 翻译计划：全文翻译
+- 当前全文译本：[S009 全文译本](../Translations/S009.full.zh-CN.md)
+- 局部摘译：无
