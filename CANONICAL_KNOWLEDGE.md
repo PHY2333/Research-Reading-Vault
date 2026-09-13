@@ -52,7 +52,7 @@
 
 ## 4. 当前范围
 
-本清单不按目录整批纳入，而只登记已经形成稳定主笔记的结论。目前覆盖 `Notes/01-量子纠错基础/` 至 `Notes/05-Magic State Distillation/` 的已整理主线，`Notes/06-CCZ Distillation/` 中已经稳定的 cochain/CSS、tensor 与 balanced product、tricycle complex、cup/integrated Leibniz、STCP 和 Menon 协议级归属，以及 `Notes/07-Lifted-Product Code/` 中的 Künneth 分解、HGP 与 LP 构造及 S007 第 6 节分层执行应用，以及 `Notes/08-Binary Extension Field Non Clifford Module/` 中二元扩域的构造、算术、结构映射与二进制表示。
+本清单不按目录整批纳入，而只登记已经形成稳定主笔记的结论。目前覆盖 `Notes/01-量子纠错基础/` 至 `Notes/05-Magic State Distillation/` 的已整理主线，`Notes/06-CCZ Distillation/` 中已经稳定的 cochain/CSS、tensor 与 balanced product、tricycle complex、cup/integrated Leibniz、STCP 和 Menon 协议级归属，以及 `Notes/07-Lifted-Product Code/` 中的 Künneth 分解、HGP 与 LP 构造及 S007 第 6 节分层执行应用，以及 `Notes/08-Binary Extension Field Non Clifford Module/` 中二元扩域的构造、算术、结构映射、二进制表示及单项式对角比特门的 Clifford 层级。
 
 尚未拆成独立概念主笔记的 single-shot CCZ factory、hypergraph magic state 等主题继续由 [[Menon 2025 Magic Tricycles]] 承担论文语境；形成稳定概念笔记后再单独登记，不在本文件预先复制论文内容。
 
@@ -74,6 +74,17 @@
 - 写新内容时引用它：涉及 $\mathbb F_{2^s}$ 元素的坐标展开、无进位加法、模不可约多项式乘法、Frobenius、子域、迹与范数、二元化矩阵，或判断某个扩域算术操作是否为 $\mathbb F_2$-线性时引用这里。
 - 不要在当前笔记重复：具体 qudit Pauli/Clifford 形式、非 Clifford 门分类、扩域 CSS 码、Reed–Solomon／代数几何码以及 magic-state distillation 协议应由后续独立笔记承担。
 - 边界：$\mathbb F_{2^s}$ 的抽象同构类型唯一，但基和不可约多项式给出的坐标表示并不典范；它的特征为 $2$，不能与整数剩余类环 $\mathbb Z/2^s\mathbb Z$ 混同。本文中的迹与范数默认指到 $\mathbb F_2$ 的绝对迹与绝对范数。
+- 状态：已整理。
+
+---
+## 单项式对角比特门的 Clifford 层级
+
+- 主笔记：[[对角相位门的Clifford层级]]，路径 `Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md`。
+- 前置依赖：计算基、酉算符与共轭、比特 Pauli 算符、二进制变量及基本整数运算；有限域理论不是本公式证明的前置。
+- 已有结论：对 $m\in\mathbb Z_{\ge1}$、$\boldsymbol a\in\mathbb F_2^n\setminus\{0\}$，门 $U_{m,\boldsymbol a}|\boldsymbol x\rangle=\exp(2\pi i\prod_{j:a_j=1}x_j/2^m)|\boldsymbol x\rangle$ 的最低 Clifford 层级为 $m+\operatorname{wt}(\boldsymbol a)-1$；主笔记给出 Pauli 共轭／相位差分的上界证明和排除更低层的证明。
+- 写新内容时引用它：判断上述单项式相位门及 $Z,S,T,\mathrm{CZ},\mathrm{CS},\mathrm{CCZ}$ 的层级，或解释相位分母与支持大小如何共同决定层数时引用。
+- 边界：采用通常的 $n$ 比特 Pauli 与 Clifford 层级，并忽略全局相位；$\boldsymbol a=0$ 只产生全局相位。相位函数在整数或模相位周期意义下计算，不能无条件改为 $\mathbb F_2$ 加法；层级编号不是电路深度或门数。本条不声称任意相位项乘积的最低层数必为各项最大值。
+- 来源：S008 arXiv:2608.09727v1 §2.1 式 (1)；Cui–Gottesman–Krishna, *Diagonal gates in the Clifford hierarchy*, arXiv:1608.06596v1，§§II、IV（Theorem 3）。
 - 状态：已整理。
 
 ---

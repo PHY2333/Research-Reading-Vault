@@ -2,20 +2,34 @@
 
 - task_id: 20260913-diagonal-clifford-hierarchy
 - route: pro-write-review
-- status: R01_APPLIED
+- status: DONE
 - branch: codex/diagonal-clifford-hierarchy-20260913
+- remote: main (https://github.com/PHY2333/Research-Reading-Vault)
 - base_commit: 81a2506ca4ad10c3f5c4fa4114f35e8a511948b1
 - initial_request_commit: 862e000e9e7ccf5da4a10a368aa460e290d9f126
-- checkpoint_commit: b66e7ae1f47e7129108ce7ee80ba8381abfdf9d6
-- author_application_commit: current application commit
-- review_result: pending fresh R02
-- target_file: Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md
-- Codex_format_repair_summary: protocol wrapper normalization only; no reader-visible repair
-- final_Obsidian_math_check: R01 pass
-- git_diff_check: pending application check
-- unresolved_items: fresh R02 and index integration
+- author_input_commit: b66e7ae1f47e7129108ce7ee80ba8381abfdf9d6
+- author_application_and_review_input_commit: 20aa355ed1bb1aff2dac115db90d30b8e2e15c92
+- delivery_commit: 本报告首次标记 DONE 的提交；含 R02 完整稿及索引集成
+- Pro_author_result: COMPLETE (6 Pro, R01)
+- Pro_fresh_review_result: COMPLETE (6 Pro, R02)
+- author_rounds: 1
+- review_rounds: 1
+- Codex_format_repair_summary: 仅外围传输协议 fence 和 END_FILE 布局；正文零改写
+- final_Obsidian_math_check: PASS，正式笔记、读者索引及 canonical 新增片段
+- git_diff_check: PASS
+- unresolved_items: 无正文问题；main 合并由用户决定
 - merge_to_main: not performed
 
-已创建用户指定 08 目录中的唯一公式推导主笔记，无新增其它前置笔记。TASK 中已预定索引与 canonical 的机械集成文字，等待 R02 通过后应用。没有改变文献登记、版本、阅读状态、主辅关系或译文；没有创建截图。无正文待核对、TODO：补引用、待补推导标记。
+## 交付
 
-此前两次推送因终端 GitHub HTTPS 凭据不可用失败；用户再次授权重试后，任务分支成功发布并恢复自动流程。独立工作树、任务分支和最小任务目录保留。下一步唯一动作：fresh Pro R02 全文审查。
+正式笔记：`Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md`。文件放在用户指定的 08 目录，作为单项式对角比特门最低 Clifford 层级公式的唯一主笔记。包含参数含义、Pauli 与层级递归定义、共轭相位差分、对所有 Pauli 的上界、非全局相位差分序列给出的下界、零支持与单比特边界，以及 Z、S、T、CZ、CS、CCZ 六类例子。
+
+fresh Pro 修订稿补齐正整数条件并澄清全局相位；已核对其五处变化并原样应用。`Notes/00-index.md` 已加入路线链接并扩充目录范围，`CANONICAL_KNOWLEDGE.md` 已登记唯一 owner，条件与修订稿一致。无新增前置笔记。
+
+没有修改 Papers 管理、来源版本、阅读状态、主辅关系或 Translations；没有生成截图。来源引用已核对；无待核对、TODO：补引用或待补推导标记。完整 canonical 的旧商记号有 checker 既存误报，与本次新内容无关。
+
+任务分支、独立工作树和五份最小任务记录保留；成功原始回复与 staging 于成功推送后清理。原 main 工作树的 Obsidian 与 S009 相关修改保持原状。
+
+## 下一步
+
+任务分支内的写作、审查、应用与索引工作完成。最终推送后停止；按 `Notes/AGENTS.md` §9，不自动合并 main。用户可直接回复“合并到 main”。

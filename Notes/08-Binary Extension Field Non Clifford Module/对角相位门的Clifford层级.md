@@ -36,7 +36,7 @@ $$
 q_A(\boldsymbol x)=\prod_{j\in A}x_j.
 $$
 
-当 $A\ne\varnothing$ 时，$q_A$ 恰好在所有参与比特均为 $1$ 时取 $1$，其余时候取 $0$。因此，
+当 $A\ne\varnothing$ 时，$q_A$ 恰好在所有参与比特均为 $1$ 时取 $1$，其余时候取 $0$。因此，对任意正整数 $m$，
 
 $$
 U_{m,\boldsymbol a}|\boldsymbol x\rangle
@@ -46,7 +46,7 @@ U_{m,\boldsymbol a}|\boldsymbol x\rangle
 \qquad m\ge1,
 $$
 
-就是只在这个条件满足时施加相位 $e^{2\pi i/2^m}$ 的门。由于门只取决于支持，也简写为 $U_{m,A}$。
+就是只在这个条件满足时施加相位 $e^{2\pi i/2^m}$ 的门。由于门对 $\boldsymbol a$ 的依赖只通过其支持体现，也简写为 $U_{m,A}$。
 
 例如，在十个比特中取 $A=\{2,7\}$，相位只由 $x_2x_7$ 决定。此时 $n=10$，但 $r=2$；另外八个比特不参与相位条件，不能把它们算进公式中的 $r$。
 
@@ -390,7 +390,7 @@ F(\boldsymbol x)
  c_\alpha\frac{q_{A_\alpha}(\boldsymbol x)}{2^{m_\alpha}},
 $$
 
-其中 $\gamma\in\mathbb R$、$c_\alpha\in\mathbb Z$、$m_\alpha\ge1$、$A_\alpha\ne\varnothing$，并且每一项都满足
+其中 $\gamma\in\mathbb R$、$c_\alpha\in\mathbb Z$，每个 $m_\alpha$ 都是正整数，每个 $A_\alpha\subseteq\{1,\ldots,n\}$ 都是非空支持，并且每一项都满足
 
 $$
 m_\alpha+|A_\alpha|-1\le k,
@@ -594,7 +594,7 @@ $$
 $$
 \boxed{
 \begin{gathered}
-m\ge1,\qquad
+m\in\mathbb Z_{\ge1},\qquad
 \boldsymbol a\ne0,\qquad
 r=\operatorname{wt}(\boldsymbol a),\\
 U_{m,\boldsymbol a}\text{ 的最低 Clifford 层级为 }
@@ -674,7 +674,7 @@ $$
 T^2=S,
 $$
 
-最低层数从 $3$ 降为 $2$。系数合并、分母约化、整数相位和全局相位都可能影响最低层数，不能把单项式结论未经检查地推广到任意相位多项式。
+相对于单个 $T$，乘积 $T^2$ 的最低层数从 $3$ 降为 $2$。因此，相位项合并后可能约去分母，或只剩整数值函数与常数，使乘积的最低层数严格低于逐项计数给出的上界。这里要区分：给同一相位函数加上整数值函数不改变门，加上常数也只改变全局相位；两者都不改变最低层数。不能把单项式结论未经检查地推广到任意相位多项式。
 
 同理，在固定 $m$ 的这个门族中，给乘积增加一个新的比特变量会使 $r$ 增加 $1$，从而使最低层数增加 $1$；这不等于已经证明“任意门每加一个控制都升一层”。$\mathrm{CZ}$ 与 $\mathrm{CS}$ 的对比也说明，仅知道相位是二次式，不足以判断它是不是 Clifford，必须同时保留相位系数与周期。稳定子态中允许的相位结构是另一个相关问题，见 [[逻辑基态的二次相位]]。
 

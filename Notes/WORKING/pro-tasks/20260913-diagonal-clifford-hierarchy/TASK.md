@@ -1,7 +1,7 @@
 ---
 task_id: 20260913-diagonal-clifford-hierarchy
 route: pro-write-review
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md
 integration_files:
@@ -79,7 +79,7 @@ R02 通过后，Codex 在 `Notes/00-index.md` 第 8 条的二元扩域链接后�
 
 - 主笔记：[[对角相位门的Clifford层级]]，路径 `Notes/08-Binary Extension Field Non Clifford Module/对角相位门的Clifford层级.md`。
 - 前置依赖：计算基、酉算符与共轭、比特 Pauli 算符、二进制变量及基本整数运算；有限域理论不是本公式证明的前置。
-- 已有结论：对 $m\ge1$、$\boldsymbol a\in\mathbb F_2^n\setminus\{0\}$，门 $U_{m,\boldsymbol a}|\boldsymbol x\rangle=\exp(2\pi i\prod_{j:a_j=1}x_j/2^m)|\boldsymbol x\rangle$ 的最低 Clifford 层级为 $m+\operatorname{wt}(\boldsymbol a)-1$；主笔记给出 Pauli 共轭／相位差分的上界证明和排除更低层的证明。
+- 已有结论：对 $m\in\mathbb Z_{\ge1}$、$\boldsymbol a\in\mathbb F_2^n\setminus\{0\}$，门 $U_{m,\boldsymbol a}|\boldsymbol x\rangle=\exp(2\pi i\prod_{j:a_j=1}x_j/2^m)|\boldsymbol x\rangle$ 的最低 Clifford 层级为 $m+\operatorname{wt}(\boldsymbol a)-1$；主笔记给出 Pauli 共轭／相位差分的上界证明和排除更低层的证明。
 - 写新内容时引用它：判断上述单项式相位门及 $Z,S,T,\mathrm{CZ},\mathrm{CS},\mathrm{CCZ}$ 的层级，或解释相位分母与支持大小如何共同决定层数时引用。
 - 边界：采用通常的 $n$ 比特 Pauli 与 Clifford 层级，并忽略全局相位；$\boldsymbol a=0$ 只产生全局相位。相位函数在整数或模相位周期意义下计算，不能无条件改为 $\mathbb F_2$ 加法；层级编号不是电路深度或门数。本条不声称任意相位项乘积的最低层数必为各项最大值。
 - 来源：S008 arXiv:2608.09727v1 §2.1 式 (1)；Cui–Gottesman–Krishna, *Diagonal gates in the Clifford hierarchy*, arXiv:1608.06596v1，§§II、IV（Theorem 3）。
@@ -88,8 +88,12 @@ R02 通过后，Codex 在 `Notes/00-index.md` 第 8 条的二元扩域链接后�
 
 # 当前阶段
 
-R01_APPLIED：作者在 6 Pro 模式返回 COMPLETE，完整文件已通过 binding、固定 repository／branch／commit、路径 allowlist 与 END_RESPONSE 验证，并应用到目标文件。作者 checkpoint 为 `b66e7ae1f47e7129108ce7ee80ba8381abfdf9d6`，会话为 https://chatgpt.com/c/6aa69bad-4054-83e9-b140-2c9a8c34f3b7 。下一阶段为全新 Pro 会话 R02。
+DONE：R01 作者与 fresh R02 审查均使用 6 Pro。R02 返回 COMPLETE，完整修订稿通过固定仓库／分支／提交／binding／allowlist／END_RESPONSE 检查后原样应用。作者与审查各运行一轮。
 
-正文初次 Obsidian 数学检查通过，没有进行正文格式或语义改写。浏览器“复制回复”把文件外围 fence 序列化为三反引号；捕获后只恢复协议要求的五反引号外层及 END_FILE 紧邻布局，文件内容不变。系统 Python 版本不支持现有 parser 的 Path.write_text(newline=...)，已使用应用提供的 Python runtime 正常运行，无需修改 parser。
+R01 输入提交为 `b66e7ae1f47e7129108ce7ee80ba8381abfdf9d6`，作者会话为 https://chatgpt.com/c/6aa69bad-4054-83e9-b140-2c9a8c34f3b7 。R01 应用提交为 `20aa355ed1bb1aff2dac115db90d30b8e2e15c92`；R02 绑定该提交，审查会话为 https://chatgpt.com/c/6aa6a323-40f0-83e9-bb7b-e10f96ed41d6 。
 
-此前两次 push 因 GitHub HTTPS 凭据不可用而暂停。用户再次授权重试后推送成功，认证阻塞已解除。任务继续在独立工作树执行，main 原有改动保持隔离。
+Codex 的补核对发现 R01 对 m 与 m_α 缺少显式正整数条件；fresh Pro 独立审查的最终完整稿已经补齐定义、归纳命题与结论，还澄清支持依赖及整数相位／全局相位不改变同一门的最低层数。R02 五处变化经只读复核通过。先前预检“未发现问题”的暂时判断已被这一补核对更正。
+
+正式笔记与索引／canonical 已整合。上方 canonical 登记的 m 条件机械采用 R02 式 (20) 的正整数条件，避免索引丢失正文适用范围；没有新增推导或改变归属。正文 Obsidian 数学检查通过；Codex 未改写 Pro 正文。两轮仅规范化浏览器复制接口产生的外围协议 fence 和 END_FILE 布局。
+
+此前两次 push 认证失败后均停止，用户授权重试后恢复推送。最终内容在任务分支交付；main 原有修改保持隔离，不自动合并。任务目录和工作树保留，成功响应按 errors-only 策略在成功推送后删除。
