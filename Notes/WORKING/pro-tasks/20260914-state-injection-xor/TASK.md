@@ -1,7 +1,7 @@
 ---
 task_id: 20260914-state-injection-xor
 route: pro-write-review
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/04-Magic State Injection/State injection.md
 integrity: fast
@@ -63,4 +63,8 @@ State injection 已是该构造的 canonical owner。仅替换同一路径的完
 
 # 当前阶段
 
-R01_APPLIED。初始 checkpoint 为 7997e1b8d407138a3ca6073ed3b8d2566b7d89cf，已推送。作者 6 Pro 已返回 COMPLETE（会话 https://chatgpt.com/c/6aa7f2bb-368c-83e8-ad9b-298b519af082）。完整响应通过绑定与 allowlist 验证后原样提取应用；正文数学检查通过，下一步独立 R02。任务目录创建并保留最小五份记录；成功响应和 staging 在最终推送后清理，失败响应按 errors-only 保留。
+DONE。初始 checkpoint 为 7997e1b8d407138a3ca6073ed3b8d2566b7d89cf；R01 作者稿原样应用于 9eb4ba8e5b62ee9566f6f69906355850c4bb2304，均已推送任务分支。作者 6 Pro 会话：https://chatgpt.com/c/6aa7f2bb-368c-83e8-ad9b-298b519af082。
+
+独立 6 Pro 在全新会话 https://chatgpt.com/c/6aa7fb66-9c48-83ee-a1fb-cad514ac985e 审查上述固定 R01 提交，返回 REVIEW_PASS。R02 的 task、request、隐藏 binding、repository、branch、commit 与 END_RESPONSE 全部通过 parser 验证；无需修订正文。最终 Obsidian 数学检查、链接核对与 git diff --check 通过，无未解决项。
+
+任务目录保留五份最小记录；成功响应、staging 和临时来源页图在应用推送成功后清理。仅使用任务分支，不自动合并 main。最终正文及范围说明见 FINAL_REPORT.md。
