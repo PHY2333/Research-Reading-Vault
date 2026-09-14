@@ -72,7 +72,46 @@ $$
 >
 > 因此，同一个门既能描述为“在 $a$ 的 $Z$ 基上控制 $d$ 的 $X$”，也能描述为“在 $d$ 的 $X$ 基上控制 $a$ 的 $Z$”。后一种描述同时改变了控制基和被控操作，并不意味着把门换成计算基中的 $\operatorname{CNOT}_{d\rightarrow a}$；这里只是重写算符，没有额外执行换基门。
 
-作用后有
+为了读出随后在数据 qubit 上做 $Z$ 测量的两个分支，先展开 CNOT 的作用，再按 $|0\rangle_d$、$|1\rangle_d$ 重新分组。
+
+> [!note] 从输入态展开到测量分支
+> 先展开辅助态 $|+\rangle_a$。辅助 qubit 为 $|0\rangle_a$ 时不翻转数据，为 $|1\rangle_a$ 时对数据施加 $X_d$，因此
+>
+> $$
+> \begin{aligned}
+> &\operatorname{CNOT}_{a\rightarrow d}|\psi\rangle_d|+\rangle_a\\
+> &\quad=\frac1{\sqrt2}\operatorname{CNOT}_{a\rightarrow d}
+> \left(|\psi\rangle_d|0\rangle_a+|\psi\rangle_d|1\rangle_a\right)\\
+> &\quad=\frac1{\sqrt2}
+> \left(|\psi\rangle_d|0\rangle_a+X|\psi\rangle_d|1\rangle_a\right).
+> \end{aligned}
+> $$
+>
+> 此时 $X$ 作用在数据 qubit 上。代入 $|\psi\rangle_d=\alpha|0\rangle_d+\beta|1\rangle_d$ 和 $X|\psi\rangle_d=\beta|0\rangle_d+\alpha|1\rangle_d$，上式展开为
+>
+> $$
+> \begin{aligned}
+> \frac1{\sqrt2}\Bigl[
+> &\alpha|0\rangle_d|0\rangle_a+\beta|1\rangle_d|0\rangle_a\\
+> &+\beta|0\rangle_d|1\rangle_a+\alpha|1\rangle_d|1\rangle_a
+> \Bigr].
+> \end{aligned}
+> $$
+>
+> 接下来测量的是数据 qubit，所以把含 $|0\rangle_d$ 的第一、第三项放在一起，把含 $|1\rangle_d$ 的第二、第四项放在一起，得到
+>
+> $$
+> \begin{aligned}
+> \frac1{\sqrt2}\Bigl[
+> &|0\rangle_d\bigl(\alpha|0\rangle_a+\beta|1\rangle_a\bigr)\\
+> &+|1\rangle_d\bigl(\beta|0\rangle_a+\alpha|1\rangle_a\bigr)
+> \Bigr].
+> \end{aligned}
+> $$
+>
+> 第一个括号正是 $|\psi\rangle_a$，第二个括号正是 $X|\psi\rangle_a$。这里的下标 $a$ 是根据重新分组后的振幅识别出来的；这一步只做了代数整理，没有交换两个 qubit，也没有额外执行一个 $X_a$。测量前的联合态一般仍是纠缠态，测得 $d=0$ 或 $d=1$ 后，辅助 qubit 才分别处于这两个条件态。
+
+因此，测量前的联合态可以写成
 
 $$
 \operatorname{CNOT}_{a\rightarrow d}
