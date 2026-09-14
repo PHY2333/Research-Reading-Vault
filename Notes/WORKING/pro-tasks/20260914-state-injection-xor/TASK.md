@@ -1,7 +1,7 @@
 ---
 task_id: 20260914-state-injection-xor
 route: pro-write-review
-status: PREPARE
+status: R01_APPLIED
 target_files:
   - Notes/04-Magic State Injection/State injection.md
 integrity: fast
@@ -63,4 +63,4 @@ State injection 已是该构造的 canonical owner。仅替换同一路径的完
 
 # 当前阶段
 
-PREPARE。任务目录创建并保留最小五份记录；成功响应和 staging 在最终推送后清理，失败响应按 errors-only 保留。
+R01_APPLIED。初始 checkpoint 为 7997e1b8d407138a3ca6073ed3b8d2566b7d89cf，已推送。作者 6 Pro 已返回 COMPLETE（会话 https://chatgpt.com/c/6aa7f2bb-368c-83e8-ad9b-298b519af082）。完整响应通过绑定与 allowlist 验证后原样提取应用；正文数学检查通过，下一步独立 R02。任务目录创建并保留最小五份记录；成功响应和 staging 在最终推送后清理，失败响应按 errors-only 保留。
