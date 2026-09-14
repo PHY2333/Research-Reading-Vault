@@ -38,6 +38,40 @@ $$
 +|-\rangle\langle-|_d\otimes Z_a.
 $$
 
+> [!note]- 同一 CNOT 的两种控制描述
+> 这里采用 $d\otimes a$ 的张量积顺序；因子排在前面，并不表示它就是控制 qubit。在这个顺序下，“辅助 $a$ 控制、数据 $d$ 为目标”的标准定义是
+>
+> $$
+> \operatorname{CNOT}_{a\rightarrow d}
+> =I_d\otimes|0\rangle\langle0|_a
+> +X_d\otimes|1\rangle\langle1|_a.
+> $$
+>
+> 判断是否执行 $X_d$ 的仍然是 $a$ 在计算基中的取值。记 $P_{\pm,d}=|\pm\rangle\langle\pm|_d$，由 $I_d=P_{+,d}+P_{-,d}$ 和 $X_d=P_{+,d}-P_{-,d}$，按数据 qubit 的 $X$ 本征态重新合并各项，得到
+>
+> $$
+> \begin{aligned}
+> \operatorname{CNOT}_{a\rightarrow d}
+> &=P_{+,d}\otimes\bigl(|0\rangle\langle0|+|1\rangle\langle1|\bigr)_a\\
+> &\quad+P_{-,d}\otimes\bigl(|0\rangle\langle0|-|1\rangle\langle1|\bigr)_a\\
+> &=P_{+,d}\otimes I_a+P_{-,d}\otimes Z_a.
+> \end{aligned}
+> $$
+>
+> 也可以直接看它对态的作用。取任意归一化辅助态 $c_0|0\rangle_a+c_1|1\rangle_a$。当数据处于 $|-\rangle_d$ 时，$X|-\rangle=-|-\rangle$，所以
+>
+> $$
+> \begin{aligned}
+> &\operatorname{CNOT}_{a\rightarrow d}
+> \left[|-\rangle_d\otimes(c_0|0\rangle_a+c_1|1\rangle_a)\right]\\
+> &\qquad=|-\rangle_d\otimes(c_0|0\rangle_a-c_1|1\rangle_a).
+> \end{aligned}
+> $$
+>
+> 因而，“$a=1$ 时对 $d$ 做 $X$”表现为辅助态的 $|1\rangle_a$ 分量获得负号，即对 $a$ 做 $Z$；这称为相位回踢（phase kickback）。当数据处于 $|+\rangle_d$ 时，由于 $X|+\rangle=|+\rangle$，辅助态保持不变。
+>
+> 因此，同一个门既能描述为“在 $a$ 的 $Z$ 基上控制 $d$ 的 $X$”，也能描述为“在 $d$ 的 $X$ 基上控制 $a$ 的 $Z$”。后一种描述同时改变了控制基和被控操作，并不意味着把门换成计算基中的 $\operatorname{CNOT}_{d\rightarrow a}$；这里只是重写算符，没有额外执行换基门。
+
 作用后有
 
 $$
@@ -302,7 +336,7 @@ u_0|0\rangle\langle0|\,|+\rangle\langle+|
 +v_0|0\rangle\langle0|\,|-\rangle\langle-|\\
 &\quad
 +u_1|1\rangle\langle1|\,|+\rangle\langle+|
-+v_1|1\rangle\langle1|\,|-\rangle\langle-|\\[1mm]
++v_1|1\rangle\langle1|\,|-\rangle\langle-|\\
 &=
 \left(
 u_0|0\rangle\langle0|
@@ -475,7 +509,7 @@ a&b\\
 c&d
 \end{pmatrix}
 =
-\frac{U}{\sqrt2},\\[2mm]
+\frac{U}{\sqrt2},\\
 K_1
 &=
 \frac1{\sqrt2}
