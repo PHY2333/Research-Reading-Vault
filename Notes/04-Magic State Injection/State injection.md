@@ -1,34 +1,26 @@
 # State injection
 
-给定未知数据态 $|\psi\rangle$，我们希望在它上面执行一个单比特酉门 $U$。一种做法是直接对数据施加 $U$；另一种做法是事先独立准备资源态
+在未知数据态上执行一个门，与事先制备一个固定的辅助态，是两种不同的任务。门注入利用这种区别：先独立制备资源态，再让它与数据相互作用，通过测量和按记录执行的校正，消耗这个资源来实现目标门。
+
+要理解这一过程，首先需要看清测量留下了什么，而不是先猜校正门。下面先研究只转移未知态的 one-bit teleportation，再直接构造 $T$ 注入。完成这个具体例子后，才讨论把 $T$ 换成一般酉门 $U$ 时，哪些操作需要改变。最后固定实际使用的 $T$ 线路，分析资源错误怎样进入数据，以及这些错误怎样接入蒸馏协议。
+
+## 1. One-bit teleportation：先学会读出测量分支
+
+### 1.1 按将被测量的标签重新组织求和
+
+设数据量子比特为 $d$，辅助量子比特为 $a$。全文采用 $d\otimes a$ 的张量积顺序。**张量因子的排列顺序，与 CNOT 的控制方向是两项不同的约定。**
+
+写未知输入为
 
 $$
-|U\rangle:=U|+\rangle,
-\qquad
-|+\rangle=\frac{|0\rangle+|1\rangle}{\sqrt2},
-$$
-
-再让数据与资源相互作用，通过测量和条件校正，把资源消耗为一次作用在数据上的门。这是本文讨论的 state injection，也称门注入或 gate teleportation。
-
-这里要分别解决两个问题：**线路是否确实实现 $U$，以及实现这条线路还需要哪些门。** 对一般 $U$，资源态 $|U\rangle$ 并不自动把其余操作变成 Clifford 操作；对 $T$ 等满足额外条件的门，才会得到只需 Clifford 操作、测量和经典前馈的注入线路。
-
-下面采用 Jacinto 等人 Sec. II.B 的线路约定，但不从图中猜测测量后的答案，而是持续使用同一套计算方法：先跟踪计算基标签，再按将被测量的标签重新组织求和，读出每个测量分支的线性算符，最后确定条件校正。[^S001]
-
-## 1. One-bit teleportation
-
-### 1.1 CNOT 改变基标签
-
-设数据量子比特为 $d$，辅助量子比特为 $a$。全文采用 $d\otimes a$ 的张量积顺序；**哪个因子排在前面，与哪个量子比特充当控制没有必然关系。**
-
-写输入为
-
-$$
-|\psi\rangle_d=\sum_{x=0}^1 c_x|x\rangle_d,
+|\psi\rangle_d=\sum_{x=0}^1c_x|x\rangle_d,
 \qquad
 \sum_x|c_x|^2=1.
 $$
 
-所有计算基指标都是比特。异或 $x\oplus y$ 表示模 $2$ 加法：两位相同时为 $0$，不同时为 $1$。因此
+先不执行额外的目标门，只要求把同一组未知振幅转移到辅助线上。
+
+所有计算基指标都取值于 $\{0,1\}$。异或 $x\oplus y$ 是模 $2$ 加法，满足
 
 $$
 x\oplus x=0,
@@ -38,7 +30,13 @@ x\oplus0=x,
 X^m|x\rangle=|x\oplus m\rangle.
 $$
 
-先使用以辅助线为控制、数据线为目标的门：
+准备辅助态
+
+$$
+|+\rangle_a=\frac{|0\rangle_a+|1\rangle_a}{\sqrt2},
+$$
+
+并使用辅助线控制数据线的 CNOT：
 
 $$
 \operatorname{CNOT}_{a\to d}
@@ -47,7 +45,7 @@ $$
 |x\oplus y\rangle_d|y\rangle_a.
 $$
 
-控制位 $y$ 保持不变，目标位 $x$ 变为 $x\oplus y$。把辅助态准备成 $|+\rangle_a$，由线性性得到
+这里第二个张量因子是控制端；它的标签 $y$ 保持不变，第一个因子上的标签被翻转。由线性性，
 
 $$
 \operatorname{CNOT}_{a\to d}
@@ -58,19 +56,19 @@ $$
 |x\oplus y\rangle_d|y\rangle_a.
 $$
 
-接下来要在计算基测量 $d$，所以应该按 $d$ 上的标签来分组。令
+接下来要在计算基测量数据线 $d$，所以需要按 $d$ 上的标签分组。令
 
 $$
 m=x\oplus y.
 $$
 
-对每个固定的 $x$，这个关系都能唯一反解为
+对每个固定的 $x$，这个关系唯一反解为
 
 $$
 y=x\oplus m.
 $$
 
-于是，遍历 $(x,y)$ 与遍历 $(x,m)$ 完全等价：每一项仍恰好出现一次，只是换了求和标签。代入便得到
+因此，遍历 $(x,y)$ 与遍历 $(x,m)$ 一一对应；换元没有遗漏或重复任何项。代入得到
 
 $$
 \begin{aligned}
@@ -89,9 +87,15 @@ X_a^m
 \end{aligned}
 $$
 
-这里振幅始终是 $c_x$，没有把它改成另一个输入振幅。改变的是基标签：辅助线上出现了 $|x\oplus m\rangle_a$，这恰好可以用 $X_a^m|x\rangle_a$ 表示。
+振幅仍然是原来的 $c_x$。改变的是求和标签，以及辅助线上对应的基矢；没有把输入振幅 $c_x$ 换成 $c_{x\oplus m}$。
 
-因此
+记
+
+$$
+|\psi\rangle_a:=\sum_xc_x|x\rangle_a,
+$$
+
+也就是把同一组系数写在辅助空间的计算基上，便得到
 
 $$
 \boxed{
@@ -100,572 +104,112 @@ $$
 =
 \frac1{\sqrt2}
 \sum_{m=0}^1
-|m\rangle_d X_a^m|\psi\rangle_a
+|m\rangle_dX_a^m|\psi\rangle_a
 }.
 $$
 
-**测量前，$m$ 只是求和指标；在 $d$ 上完成计算基测量后，实际读出的 $m$ 才成为经典记录。** 不能在测量前就把联合态当成其中某个分支。
+这里的跨线记号只是在对应两个空间的计算基，不表示另外执行了一道交换门。
 
-### 1.2 跨线态标签与分支算符
+### 1.2 从未归一化向量得到概率和校正
 
-上式中的
-
-$$
-|\psi\rangle_a=\sum_xc_x|x\rangle_a
-$$
-
-表示：把相同的一组系数 $c_x$ 放在辅助线的计算基上。它与 $|\psi\rangle_d$ 属于不同的单比特空间，并不是两个原本就在同一空间中的向量。
-
-为了明确后面的映射方向，记
+在测量发生之前，$m$ 只是联合态中的求和指标。测量 $d$ 并实际读到 $m$ 后，才得到一个经典记录，并留下辅助线上的未归一化向量
 
 $$
-J_{a\leftarrow d}
-=
-\sum_x|x\rangle_a\,{}_d\langle x|.
+\frac1{\sqrt2}X_a^m|\psi\rangle_a.
 $$
 
-它把数据空间的计算基对应到辅助空间的计算基，满足
-
-$$
-J_{a\leftarrow d}|\psi\rangle_d=|\psi\rangle_a,
-\qquad
-J_{a\leftarrow d}^{\dagger}J_{a\leftarrow d}=I_d.
-$$
-
-这个符号记录的是空间之间的基对应，不是在联合线路中额外执行的 SWAP 门。
-
-测得 $d=m$ 时，对联合态取 ${}_d\langle m|$，留下辅助线上的未归一化向量
-
-$$
-L_m|\psi\rangle_d,
-\qquad
-L_m=\frac1{\sqrt2}X_a^mJ_{a\leftarrow d}.
-$$
-
-这样的 $L_m$ 称为分支算符：输入是测量前的数据态，输出是相应记录下尚未归一化的剩余态。它同时保存了条件态和发生概率的信息：
+其范数平方就是该记录的概率：
 
 $$
 p_m
 =
-\|L_m|\psi\rangle_d\|^2
+\left\|
+\frac1{\sqrt2}X_a^m|\psi\rangle_a
+\right\|^2
 =
-{}_d\langle\psi|L_m^\dagger L_m|\psi\rangle_d.
+\frac12.
 $$
 
-只有在 $p_m>0$ 时，归一化条件态才是
+除以 $\sqrt{p_m}$ 后，归一化条件态为
 
 $$
-\frac{L_m|\psi\rangle_d}{\sqrt{p_m}}.
+X_a^m|\psi\rangle_a.
 $$
 
-本例中
+根据已读出的 $m$，再对辅助线执行 $X_a^m$。因为 $X^{2m}=I$，输出恢复为 $|\psi\rangle_a$。
 
-$$
-L_m^\dagger L_m
-=
-\frac12J_{a\leftarrow d}^\dagger J_{a\leftarrow d}
-=
-\frac12I_d,
-$$
-
-所以两个记录的概率都是 $1/2$，归一化条件态为 $X_a^m|\psi\rangle_a$。根据测量结果 $m$ 再对辅助线施加 $X_a^m$，由 $X^{2m}=I$ 恢复 $|\psi\rangle_a$。
-
-这条线路的输出位于辅助线：**先执行 $\operatorname{CNOT}_{a\to d}$，测量数据线 $d$，再按记录校正辅助线 $a$。** 数据线已经被测量，并没有同时保留下第二份未知输入态。
-
-## 2. 同一 CNOT 的 $X$ 基描述与一般 $U$
-
-### 2.1 在数据的 X 基上改变 CNOT 控制描述
-
-后面要构造的门会在数据线的 $X$ 基上受到控制，因此先给这组基一个比特标签：
-
-$$
-|s_X\rangle
-:=
-Z^s|+\rangle
-=
-\frac{|0\rangle+(-1)^s|1\rangle}{\sqrt2},
-\qquad
-s\in\{0,1\}.
-$$
-
-其中 $|0_X\rangle=|+\rangle$、$|1_X\rangle=|-\rangle$，并且
-
-$$
-X|s_X\rangle=(-1)^s|s_X\rangle.
-$$
-
-现在让辅助线处于计算基态 $|y\rangle_a$。原来的 $\operatorname{CNOT}_{a\to d}$ 对数据施加 $X_d^y$，于是
-
-$$
-\begin{aligned}
-\operatorname{CNOT}_{a\to d}
-|s_X\rangle_d|y\rangle_a
-&=
-(-1)^{sy}|s_X\rangle_d|y\rangle_a\\
-&=
-|s_X\rangle_d Z_a^s|y\rangle_a.
-\end{aligned}
-$$
-
-这在一组联合空间的基上确定了同一个算符：
-
-$$
-\boxed{
-\operatorname{CNOT}_{a\to d}
-=
-|+\rangle\langle+|_d\otimes I_a
-+
-|-\rangle\langle-|_d\otimes Z_a
-}.
-$$
-
-它既可以描述为“在 $a$ 的计算基上控制 $d$ 的 $X$”，也可以描述为“在 $d$ 的 $X$ 基上控制 $a$ 的 $Z$”。后一种描述同时改变了控制基和被控操作，当数据线固定为 $|-\rangle_d$ 时，目标上的 $X$ 本征值 $-1$ 就表现为控制端的 $Z_a$：辅助态中 $|1\rangle_a$ 分量相对 $|0\rangle_a$ 分量多一个负号。这就是这里的**相位回踢**，控制方向仍为 $a\to d$。
-
-### 2.2 通过共轭把目标门接入传态
-
-现在希望输出不只是 $|\psi\rangle$，而是 $U|\psi\rangle$。把辅助态准备成 $|U\rangle=U|+\rangle$，并定义
-
-$$
-W_U
-=
-(I_d\otimes U_a)
-\operatorname{CNOT}_{a\to d}
-(I_d\otimes U_a^\dagger).
-$$
-
-算符从右向左作用。最右侧的 $U_a^\dagger$ 与资源中的 $U_a$ 抵消，因此可以直接复用上一节的传态恒等式：
-
-$$
-\begin{aligned}
-W_U|\psi\rangle_d|U\rangle_a
-&=
-(I_d\otimes U_a)
-\operatorname{CNOT}_{a\to d}
-|\psi\rangle_d|+\rangle_a\\
-&=
-\frac1{\sqrt2}
-\sum_m|m\rangle_d
-U_aX_a^m|\psi\rangle_a.
-\end{aligned}
-$$
-
-由 $X$ 基描述，同一个 $W_U$ 也可以写成
-
-$$
-W_U
-=
-\sum_{s=0}^1
-|s_X\rangle\langle s_X|_d
-\otimes U_aZ_a^sU_a^\dagger.
-$$
-
-也就是说，$d$ 处于 $|-\rangle$ 时，对辅助线执行 $UZU^\dagger$；处于 $|+\rangle$ 时不执行。
-
-测量 $d$ 得到 $m$ 后，从数据空间到辅助空间的分支算符为
-
-$$
-L_m(U)
-=
-\frac1{\sqrt2}
-U_aX_a^mJ_{a\leftarrow d}.
-$$
-
-由酉性，
-
-$$
-L_m(U)^\dagger L_m(U)=\frac12I_d.
-$$
-
-所以归一化条件态是 $UX^m|\psi\rangle_a$。它与目标 $U|\psi\rangle_a$ 的差别，可以由辅助线上的门 $UX^mU^\dagger$ 消除：
-
-$$
-(UX^mU^\dagger)(UX^m|\psi\rangle)
-=
-U|\psi\rangle.
-$$
-
-**这条一般 $U$ 线路的输出仍在辅助线。** 准备 $|\psi\rangle_d|U\rangle_a$，执行 $W_U$，在计算基测量 $d$，最后在 $a$ 上执行 $UX^mU^\dagger$。
-
-这证明了一个传态恒等式，但尚未证明它是一种低成本实现。除了准备 $|U\rangle$，还必须实现 $W_U$ 及条件校正；这些操作本身都依赖于 $U$。不能仅凭这个恒等式就断言，任意单比特酉门都能由一个 $U|+\rangle$ 资源态加 Clifford 操作实现。
-
-## 3. 从测量分支确定原位线路
-
-如果希望输出保留在原数据线，就不能继续测量并丢弃这条线。下面改为测量辅助线，并从这个要求反推线路中的门。
-
-两个输入仍是 $|\psi\rangle_d$ 和 $|U\rangle_a$。先考察一条候选线路：执行计算基中的 $\operatorname{CNOT}_{d\to a}$，然后在计算基测量辅助线 $a$。我们希望零测量分支直接实现 $U$，另一个分支再按记录校正。为判断还缺少什么操作，先求出这条候选线路对两个数据 $X$ 基态的作用。
-
-### 3.1 一条可复用的辅助线测量规则
-
-设辅助线上有任意态
-
-$$
-|\eta\rangle_a=\sum_y\eta_y|y\rangle_a.
-$$
-
-如果数据处于 $|s_X\rangle_d$，那么在执行 $\operatorname{CNOT}_{d\to a}$ 后，辅助线的计算基标签由 $y$ 变为 $y\oplus x$。测得辅助线为 $m$，就选中了
-
-$$
-y=x\oplus m.
-$$
-
-因此
-
-$$
-\begin{aligned}
-{}_a\langle m|
-\operatorname{CNOT}_{d\to a}
-\bigl(|s_X\rangle_d|\eta\rangle_a\bigr)
-&=
-{}_{a}\langle m| \frac{1}{\sqrt{ 2 }}\sum_{x,y}(-1)^{sx}\eta_{y}|x\rangle_{d}|y\oplus x\rangle_{a} \\
-&=
-\frac1{\sqrt2}
-\sum_x(-1)^{sx}\eta_{x\oplus m}|x\rangle_d\\
-&=
-\frac1{\sqrt2}
-Z_d^sX_d^m|\eta\rangle_d. \\
-\end{aligned}
-$$
-
-最后一行仍使用前面的跨线态标签约定：$|\eta\rangle_d$ 表示把系数 $\eta_y$ 放在数据空间的计算基上。这里没有额外的交换操作。
-
-### 3.2 从两个输入分支的失配引入受控门
-
-先令 $m=0$、$|\eta\rangle=|U\rangle=U|+\rangle$，把上一节的规则用于尚未添加其它门的候选线路。暂时省略共同的因子 $1/\sqrt2$，比较它与目标门 $U$ 对两个基态的作用：
-
-| 数据输入 | 候选线路的零分支输出 | 目标门的输出 |
-|---|---|---|
-| $\lvert+\rangle$ | $U\lvert+\rangle$ | $U\lvert+\rangle$ |
-| $\lvert-\rangle$ | $ZU\lvert+\rangle$ | $U\lvert-\rangle=UZ\lvert+\rangle$ |
-
-**正分支已经正确，负分支却把目标中的 $UZ$ 变成了 $ZU$。** 一般不能把 $Z$ 穿过 $U$，所以仅靠这条 CNOT 与辅助线测量，还不能保证输出是所需的 $U|\psi\rangle$。
-
-这提示我们在 CNOT 之前增加一个辅助门 $R$：数据处于 $|+\rangle$ 时保持资源态 $|U\rangle$；处于 $|-\rangle$ 时，将资源态改为 $R|U\rangle$，补偿第二行的失配。两个需要不同处理的输入正是数据的两个 $X$ 基态，因此使用受控门
-
-$$
-\begin{aligned}
-\Lambda_X(R)
-&=|+\rangle\langle+|_d\otimes I_a
-+|-\rangle\langle-|_d\otimes R_a\\
-&=\sum_{s=0}^1|s_X\rangle\langle s_X|_d\otimes R_a^s.
-\end{aligned}
-$$
-
-指数 $s$ 只是在 $I$ 与 $R$ 之间选择，不要求 $R^2=I$。一般若无条件施加这个补偿，还会改变原本正确的正分支。这里必须保留数据在两个 $X$ 基态之间的相干叠加；先测量数据的 $X$、再按结果选择操作，会丢失这种相干，不能替代上述受控门。
-
-如果 $[U,Z]=0$，表中两行已经吻合，可以取 $R=I$。因此，$R$ 是这套原位构造中针对分支失配的补偿，并非改变输出位置就必需的一道额外门。下面先确定一般 $U$ 对 $R$ 的要求，再选择一个满足条件的酉门，最后检查另一个测量分支如何校正。
-
-至此，待确定的线路顺序为：$\Lambda_X(R)$、$\operatorname{CNOT}_{d\to a}$、辅助线计算基测量，最后按记录 $m$ 校正数据线。
-
-定义原位线路的分支算符 $K_m(R)$：
-
-$$
-\begin{aligned}
-K_m(R)|\psi\rangle_d
-:={}_a\langle m|\,
-\operatorname{CNOT}_{d\to a}
-\Lambda_X(R)
-\bigl(|\psi\rangle_d|U\rangle_a\bigr).
-\end{aligned}
-$$
-
-这里输入和输出都属于数据空间，不再需要跨线映射 $J_{a\leftarrow d}$。
-
-因为 $m=0$ 时不打算施加额外校正，先要求
-
-$$
-K_0(R)=\lambda U,
-$$
-
-其中 $\lambda$ 是与输入无关的分支振幅。我们不先假定它的大小，而是从线路本身确定它。
-
-当输入为 $|+\rangle_d$ 时，受控门不执行 $R$。上一条测量规则给出
-
-$$
-K_0(R)|+\rangle
-=
-\frac1{\sqrt2}|U\rangle
-=
-\frac1{\sqrt2}U|+\rangle.
-$$
-
-由于 $U|+\rangle$ 非零，必须有
-
-$$
-\lambda=\frac1{\sqrt2}.
-$$
-
-再把输入取为 $|-\rangle_d$。这次辅助态先变为 $R|U\rangle$，零分支为
-
-$$
-K_0(R)|-\rangle
-=
-\frac1{\sqrt2}Z\bigl(R|U\rangle\bigr).
-$$
+这条线路的实际顺序是：准备 $|+\rangle_a$，执行 $\operatorname{CNOT}_{a\to d}$，在计算基测量数据线 $d$，按记录校正辅助线 $a$。输出位于辅助线；数据线已经被测量，并没有同时保留第二份未知输入。
 
-要使它等于 $U|-\rangle/\sqrt2$，必须满足
+这属于 **one-bit teleportation**。在 Zhou、Leung 和 Chuang 的命名中，它是式 (7) 的 X-teleportation：辅助线先制备成 $|+\rangle$，测量后使用 $X$ 校正。这个名称并不表示要在数据的 $X$ 基中测量。它与标准远程隐形传态也有不同的操作前提：标准协议使用预共享 Bell 对和两位经典测量结果，不再要求发送端与接收端执行联合量子门；这里则允许 $d$ 与 $a$ 直接进行 CNOT，只使用一个辅助量子比特和一位测量记录。[^S010]
 
-$$
-\boxed{
-R|U\rangle=ZU|-\rangle
-}.
-$$
-
-这里两端均可写在辅助空间中；前面的测量规则负责把相同的坐标送回数据空间。
-
-由于 $|+\rangle$、$|-\rangle$ 构成一组基，这个条件连同已经自动满足的 $|+\rangle$ 分支，足以保证
-
-$$
-K_0(R)=\frac{U}{\sqrt2}.
-$$
-
-因此，零分支最初确定的只是 **$R$ 对资源态这个向量的作用**，而不是 $R$ 在整个辅助空间上的唯一形式。
-
-### 3.3 选择一个酉延拓
-
-一个直接可用的选择是
-
-$$
-\boxed{
-R_U:=ZUZU^\dagger
-}.
-$$
-
-它是酉算符，因为各因子都是酉算符，并且
-
-$$
-R_U|U\rangle
-=
-ZUZU^\dagger U|+\rangle
-=
-ZU|-\rangle.
-$$
-
-这就把所需的单个态映射延拓为了整个单比特空间上的酉门。
-
-这个延拓并不唯一。输入侧的
-
-$$
-U|+\rangle,\qquad U|-\rangle
-$$
-
-是一组正交归一基，输出侧的
-
-$$
-ZU|-\rangle,\qquad ZU|+\rangle
-$$
-
-也是。对任意实数 $\theta$，规定
-
-$$
-R_\theta U|+\rangle=ZU|-\rangle,
-\qquad
-R_\theta U|-\rangle=e^{i\theta}ZU|+\rangle,
-$$
-
-都会定义一个满足同样资源态约束的酉门；$\theta=0$ 就给出 $R_U$。这些门在理想资源上的原位线路相同，但在资源偏离 $|U\rangle$ 时，可能对其正交方向产生不同作用，因而**不能自动沿用同一套错误传播结论**。
-
-还要区分这种延拓自由度与“随便丢掉 $R$ 的整体相位”。若把整个 $R$ 替换成 $e^{i\theta}R$，则
-
-$$
-\Lambda_X(e^{i\theta}R)
-=
-|+\rangle\langle+|\otimes I
-+
-e^{i\theta}|-\rangle\langle-|\otimes R.
-$$
-
-相位只出现在一个控制分支中，已经是联合态的相对相位，不能当作整条线路的整体相位忽略。
-
-### 3.4 两个分支与条件校正
-
-以下固定使用 $R_U$，并记 $K_m:=K_m(R_U)$。
-
-对 $s=0,1$，刚才的构造可以统一写成
-
-$$
-R_U^s|U\rangle=Z^sU|s_X\rangle.
-$$
-
-把它代入辅助线测量规则。右端按相同计算基坐标写在数据空间中，得到
-
-$$
-\begin{aligned}
-K_m|s_X\rangle
-&=
-\frac1{\sqrt2}
-Z^sX^mZ^sU|s_X\rangle\\
-&=
-\frac{(-1)^{sm}}{\sqrt2}
-X^mU|s_X\rangle\\
-&=
-\frac1{\sqrt2}
-X^mUX^m|s_X\rangle.
-\end{aligned}
-$$
-
-第二步只用了
-
-$$
-Z^sX^mZ^s=(-1)^{sm}X^m,
-$$
+到这里，转移未知态的问题已经解决，计算始终只用了计算基和 XOR。
 
-第三步只用了
+## 2. 直接构造 $T$ 注入：让资源相位作用在数据上
 
-$$
-X^m|s_X\rangle=(-1)^{sm}|s_X\rangle.
-$$
-
-没有把 $X$ 或 $Z$ 无条件穿过一般的 $U$。由于等式对两个 $X$ 基矢都成立，由线性性得到
-
-$$
-\boxed{
-K_m=\frac1{\sqrt2}X^mUX^m
-}.
-$$
-
-也就是
-
-$$
-K_0=\frac{U}{\sqrt2},
-\qquad
-K_1=\frac{XUX}{\sqrt2}.
-$$
-
-现在零分支已经完成目标；另一个分支需要一个门 $C_U$ 满足
-
-$$
-C_U(XUX)=U.
-$$
-
-因为 $XUX$ 是酉门，直接右乘其逆得到
-
-$$
-\boxed{
-C_U=U(XUX)^\dagger=UXU^\dagger X
-}.
-$$
-
-于是
-
-$$
-C_U(XUX)=UXU^\dagger XXUX=U,
-$$
-
-并且两个分支可以统一写成
-
-$$
-\boxed{
-C_U^mK_m=\frac{U}{\sqrt2}
-}.
-$$
-
-这里 $C_U^m$ 仍只是按比特 $m$ 选择 $I$ 或 $C_U$，不意味着 $C_U$ 是二阶门。
-
-最后再由分支算符计算概率：
-
-$$
-K_m^\dagger K_m
-=
-\frac12(X^mUX^m)^\dagger(X^mUX^m)
-=
-\frac12I.
-$$
-
-所以在理想资源和酉门假设下，每个记录的概率都是 $1/2$，归一化并校正后的输出恒为 $U|\psi\rangle_d$。
-
-**原位线路因此被完整确定：** 在 $d$ 的 $X$ 基上控制 $a$ 的 $R_U$，执行 $\operatorname{CNOT}_{d\to a}$，测量辅助线 $a$，再在数据线 $d$ 上执行 $C_U^m$。它与前面的输出到辅助线的线路，不仅测量位置不同，所用计算基 CNOT 的方向也不同。
-
-## 4. 对角门与 $T$ 注入
-
-### 4.1 对角性消去受控门，第三层条件控制校正代价
-
-一般原位线路仍有一个依赖 $U$ 的相干受控门。若 $U$ 在计算基中对角，则
-
-$$
-[U,Z]=0,
-$$
-
-因此所选延拓满足
-
-$$
-R_U=ZUZU^\dagger=UZZU^\dagger=I.
-$$
-
-这时整个 $\Lambda_X(R_U)$ 消失，线路只剩下 $\operatorname{CNOT}_{d\to a}$、辅助线的计算基测量，以及数据线上的条件校正 $C_U^m$。
+### 2.1 为什么要改变 CNOT 方向和测量位置
 
-接下来还要检查 $C_U$ 是否容易实现。这里需要 Clifford 层级的最短定义。Pauli 算符由 $X$、$Z$ 及其乘积和相位组成，其中 $Y=iXZ$。Clifford 门组成第二层 $\mathcal C_2$：它们通过共轭把 Pauli 算符仍映为 Pauli 算符。第三层 $\mathcal C_3$ 的酉门则通过共轭把每个 Pauli 算符映为 Clifford 门。
+现在提出一个新的目标：不只转移 $|\psi\rangle$，而是实现
 
-若进一步有 $U\in\mathcal C_3$，则
-
-$$
-UXU^\dagger\in\mathcal C_2.
-$$
-
-Clifford 门对乘法封闭，而 $X$ 本身是 Clifford，所以
-
 $$
-C_U=(UXU^\dagger)X\in\mathcal C_2.
+|\psi\rangle_d\longmapsto T|\psi\rangle_d,
 $$
-
-因此，对于这里的**单比特对角第三层门**，原位注入确实只需 Clifford 操作、测量、经典前馈和资源态 $|U\rangle$。
-
-这两个条件承担不同作用：对角性消去相干受控门，第三层条件保证剩下的条件校正是 Clifford。对一般非对角 $U$，即使某个被控算符本身是 Clifford，也不能据此认定其相干受控版本是 Clifford；量子控制不能与测量后的经典条件选择混为一谈。
 
-### 4.2 用相位标签计算 $T$ 的分支
+并把输出保留在原数据线。
 
-固定
+固定约定
 
 $$
 T=\operatorname{diag}(1,\omega),
 \qquad
 \omega=e^{i\pi/4},
-\qquad
-S=\operatorname{diag}(1,i).
 $$
 
-它们对计算基的作用是
+所以
 
 $$
-T|x\rangle=\omega^x|x\rangle,
-\qquad
-S|x\rangle=i^x|x\rangle.
+T|x\rangle=\omega^x|x\rangle.
 $$
 
-资源态为
+事先准备资源态
 
 $$
-|T\rangle
+|T\rangle_a
 =
-\frac1{\sqrt2}\sum_y\omega^y|y\rangle.
+T|+\rangle_a
+=
+\frac1{\sqrt2}\sum_y\omega^y|y\rangle_a.
 $$
 
-由于 $T$ 对角，取 $R_T=I$。线路是：数据线控制资源线的 CNOT，随后测量资源线，最后校正数据线；这就是主来源式 (2) 的 $T$ 注入线路。[^S001]
+它与 $|+\rangle$ 的区别，是资源计算基分量上的相对相位。我们需要让这个相位变成依赖数据标签 $x$ 的相位，同时不能测掉要保留的数据线。
 
-先从一般公式求精确校正。对基矢 $|x\rangle$，$TXT^\dagger X$ 中的两个 $X$ 先后把标签翻转再翻回，所以
-
-$$
-\begin{aligned}
-C_T|x\rangle
-&=
-TXT^\dagger X|x\rangle\\
-&=
-\omega^{x-(x\oplus1)}|x\rangle\\
-&=
-\omega^{2x-1}|x\rangle\\
-&=
-\omega^{-1}i^x|x\rangle.
-\end{aligned}
-$$
-
-因此
+仅仅把上一节的测量位置改到辅助线，还不能达到这一目标。保留原来的 $\operatorname{CNOT}_{a\to d}$ 时，测得辅助线为 $m$，留下
 
 $$
-\boxed{
-C_T=\omega^{-1}S
-}.
+{}_a\langle m|
+\operatorname{CNOT}_{a\to d}
+|\psi\rangle_d|T\rangle_a
+=
+\frac{\omega^m}{\sqrt2}X_d^m|\psi\rangle_d.
 $$
 
-再用异或直接读出测量分支。对任意输入，
+消掉 $X^m$ 后仍然只有 $|\psi\rangle$。资源相位变成了只依赖记录的整体相位 $\omega^m$，没有成为所需的 $\omega^x$。
+
+因此改用数据线控制辅助线：
+
+$$
+\operatorname{CNOT}_{d\to a}
+|x\rangle_d|y\rangle_a
+=
+|x\rangle_d|y\oplus x\rangle_a.
+$$
+
+这样，测量辅助线得到 $m$ 时，会选中 $y=x\oplus m$；资源原有的相位 $\omega^y$ 就变成与数据标签有关的 $\omega^{x\oplus m}$。
+
+**这里确实更换了实际线路：CNOT 的计算基控制方向由 $a\to d$ 改为 $d\to a$，测量位置由数据线改为辅助线。它不是同一个 CNOT 的等价表示。**
+
+### 2.2 用同一次 XOR 换元读出两个分支
+
+对任意输入，
 
 $$
 \begin{aligned}
@@ -674,7 +218,7 @@ $$
 &=
 \frac1{\sqrt2}
 \sum_{x,y}c_x\omega^y
-|x\rangle_d|x\oplus y\rangle_a\\
+|x\rangle_d|y\oplus x\rangle_a\\
 &=
 \frac1{\sqrt2}
 \sum_{m,x}c_x\omega^{x\oplus m}
@@ -682,27 +226,96 @@ $$
 \end{aligned}
 $$
 
-于是
+第二行仍然只是使用一一换元
+
+$$
+m=y\oplus x,
+\qquad
+y=x\oplus m.
+$$
+
+测得辅助线为 $m$ 后，数据线上的未归一化输出为
+
+$$
+\frac1{\sqrt2}
+\sum_xc_x\omega^{x\oplus m}|x\rangle_d.
+$$
+
+把这个从输入数据到剩余数据的线性映射记为 $K_m$，称为该记录的**分支算符**：
 
 $$
 \boxed{
-K_m|x\rangle
+K_m
 =
-\frac{\omega^{x\oplus m}}{\sqrt2}|x\rangle
+\frac1{\sqrt2}
+\sum_x\omega^{x\oplus m}|x\rangle\langle x|
 }.
 $$
 
-这里与第一节一样，先由测量标签固定 $y=x\oplus m$，再读取该项原有的振幅；不需要重新展开四个矩阵元素。
+于是
 
-施加实际使用的校正 $S^m$ 后，
+$$
+K_m|x\rangle
+=
+\frac{\omega^{x\oplus m}}{\sqrt2}|x\rangle.
+$$
+
+分支算符保存了尚未归一化的输出，因而也保存了概率。一般地，对归一化输入 $|\psi\rangle$，
+
+$$
+p_m=\|K_m|\psi\rangle\|^2
+=\langle\psi|K_m^\dagger K_m|\psi\rangle.
+$$
+
+当 $p_m>0$ 时，归一化条件态才是
+
+$$
+\frac{K_m|\psi\rangle}{\sqrt{p_m}}.
+$$
+
+本例每个对角系数的模都是 $1/\sqrt2$，所以
+
+$$
+K_m^\dagger K_m=\frac12I,
+\qquad
+p_m=\frac12.
+$$
+
+这一步说明测量记录与未知输入的振幅无关；它不是在读取 $|\psi\rangle$ 的某个计算基值。
+
+### 2.3 为什么校正是 $S^m$
+
+先分别读出两个分支：
+
+$$
+K_0=\frac{T}{\sqrt2},
+\qquad
+K_1=\frac{\omega}{\sqrt2}T^\dagger.
+$$
+
+零记录已经给出目标门。记录为 $1$ 时，需要把 $T^\dagger$ 变为 $T$。定义
+
+$$
+S:=T^2=\operatorname{diag}(1,i),
+$$
+
+便有
+
+$$
+ST^\dagger=T.
+$$
+
+因此，测量后按记录执行 $S^m$ 即可。
+
+为了同时核对两个分支及其相位，把校正直接作用到计算基上：
 
 $$
 S^mK_m|x\rangle
 =
-\frac{\omega^{2mx+x\oplus m}}{\sqrt2}|x\rangle.
+\frac{\omega^{2mx+(x\oplus m)}}{\sqrt2}|x\rangle.
 $$
 
-此处相位指数按整数计算。对比特 $x,m$，有整数恒等式
+这里相位指数按整数计算。对比特 $x,m$，有整数恒等式
 
 $$
 x\oplus m=x+m-2xm,
@@ -714,7 +327,7 @@ $$
 2mx+(x\oplus m)=x+m.
 $$
 
-由此得到
+于是
 
 $$
 \boxed{
@@ -722,57 +335,608 @@ S^mK_m=\frac{\omega^m}{\sqrt2}T
 }.
 $$
 
-不能无条件把 $\omega^{x\oplus m}$ 改成 $\omega^{x+m}$；例如 $x=m=1$ 时，两者分别是 $1$ 和 $i$。在上面的正确计算中，正是校正 $S^m$ 提供的 $\omega^{2mx}$ 补偿了差别。
+不能直接把 $\omega^{x\oplus m}$ 换成 $\omega^{x+m}$：当 $x=m=1$ 时，两者分别为 $1$ 和 $i$。正是 $S^m$ 提供的相位补偿，使上面的等式成立。
 
-两个未校正分支也可以读成
+每个记录的概率都是 $1/2$。归一化并校正后，条件态为
 
 $$
-K_0=\frac{T}{\sqrt2},
+\omega^mT|\psi\rangle.
+$$
+
+此时 $m$ 已经是经典记录，$\omega^m$ 是该条件态的整体相位，不影响其物理状态。
+
+因此，标准 $T$ 注入线路已经完整得到：**准备 $|T\rangle_a$，执行 $\operatorname{CNOT}_{d\to a}$，在计算基测量辅助线 $a$，对数据线执行 $S^m$。** 这就是 Jacinto 等人式 (2) 使用的线路。[^S001]
+
+### 2.4 这条线路为什么有用
+
+Clifford 门是通过酉共轭把 Pauli 算符仍映为 Pauli 算符的门。这里的 Pauli 算符由 $X$、$Z$ 及其乘积和相位组成，其中 $Y=iXZ$。
+
+CNOT 是 Clifford 门；$S$ 也满足
+
+$$
+SXS^\dagger=Y,
 \qquad
-K_1=\frac{\omega}{\sqrt2}T^\dagger.
+SZS^\dagger=Z.
 $$
 
-因此，$m=0$ 时已经实现 $T$；$m=1$ 时先得到与 $T^\dagger$ 相差整体相位的条件态，再用 $ST^\dagger=T$ 校正。
+所以，当资源 $|T\rangle$ 已经备好后，剩余线路只使用 Clifford 门、计算基测量和经典前馈。这里的“前馈”就是根据已经读出的 $m$ 选择是否执行单比特门 $S$，不是在测量前额外执行一个相干的受控 $S$ 门。
 
-由 $SXS^\dagger=Y$、$SZS^\dagger=Z$ 可知 $S$ 是 Clifford。又因为
+$S$ 不是 Pauli。可以实际执行它，也可以在能够相应调整后续门和测量的 Clifford frame 中记录它；只记录待校正 Pauli 的 Pauli frame，不能直接代替这一 $S$ 校正。
+
+这个具体构造已经不需要更多表示变换。接下来的问题不是补完 $T$ 注入，而是辨认它的哪些性质能推广到一般 $U$。
+
+## 3. 一般 $U$：先把目标门接入辅助线输出的传态
+
+### 3.1 资源中放入 $U$，为什么相互作用也要改变
+
+现在令 $U$ 为任意单比特酉门，并准备
 
 $$
-TXT^\dagger=C_TX=\omega^{-1}SX,
+|U\rangle:=U|+\rangle.
+$$
+
+$T$ 的计算只涉及计算基相位，而一般 $U$ 还可能混合计算基方向，不能直接照搬那段相位计算。最直接的起点，是第一节已经证明的传态恒等式：先允许输出位于辅助线，再问怎样使它成为 $U|\psi\rangle_a$。
+
+如果在第一节的 CNOT 之后对辅助线施加 $U$，联合态会变为
+
+$$
+\frac1{\sqrt2}
+\sum_m|m\rangle_dU_aX_a^m|\psi\rangle_a.
+$$
+
+但我们的目标是把 $U$ 放进事先制备的资源，而不是等未知数据传过来以后再直接执行 $U$。为此，需要找一个双比特算符 $W_U$，使
+
+$$
+W_U(I_d\otimes U_a)
+=
+(I_d\otimes U_a)\operatorname{CNOT}_{a\to d}.
+$$
+
+右乘 $I_d\otimes U_a^\dagger$，就确定了
+
+$$
+\boxed{
+W_U
+=
+(I_d\otimes U_a)
+\operatorname{CNOT}_{a\to d}
+(I_d\otimes U_a^\dagger)
+}.
+$$
+
+这不是假定 $U$ 可以穿过 CNOT，而是用共轭确定穿过去以后应当使用的新算符。由定义，
+
+$$
+\begin{aligned}
+W_U|\psi\rangle_d|U\rangle_a
+&=
+(I_d\otimes U_a)
+\operatorname{CNOT}_{a\to d}
+|\psi\rangle_d|+\rangle_a\\
+&=
+\frac1{\sqrt2}
+\sum_m|m\rangle_dU_aX_a^m|\psi\rangle_a.
+\end{aligned}
+$$
+
+测量位置仍然是数据线 $d$，输出位置仍然是辅助线 $a$。测得 $m$ 后，未归一化输出为
+
+$$
+\frac1{\sqrt2}UX^m|\psi\rangle_a.
+$$
+
+如果显式区分输入空间与输出空间，可以写出计算基对应
+
+$$
+J_{a\leftarrow d}
+=
+\sum_x|x\rangle_a\,{}_d\langle x|,
+$$
+
+以及从数据空间到辅助空间的分支算符
+
+$$
+L_m(U)
+=
+\frac1{\sqrt2}U_aX_a^mJ_{a\leftarrow d}.
+$$
+
+$J_{a\leftarrow d}$ 只记录相同坐标怎样写到另一条线上，不是另外执行的 SWAP。因为
+
+$$
+J_{a\leftarrow d}^\dagger J_{a\leftarrow d}=I_d,
+$$
+
+所以
+
+$$
+L_m(U)^\dagger L_m(U)=\frac12I_d.
+$$
+
+两个记录仍各以概率 $1/2$ 出现，归一化条件态是 $UX^m|\psi\rangle_a$。按记录在辅助线上施加 $UX^mU^\dagger$，便有
+
+$$
+(UX^mU^\dagger)(UX^m|\psi\rangle)
+=
+U|\psi\rangle.
+$$
+
+至此，一般 $U$ 的辅助线输出恒等式已经证明，仍没有使用数据 $X$ 基。
+
+### 3.2 现在为什么值得改写 CNOT
+
+上面的证明回答了“线路怎样才会实现 $U$”，却没有回答“$W_U$ 是否容易实现”。若照定义直接在线执行 $U^\dagger$、CNOT 和 $U$，就未必减少了实现目标门的困难。
+
+现在需要看清：**对辅助线做 $U$ 共轭，究竟把 CNOT 中的哪一部分变成了什么？** 为此，希望把数据端的算符保持固定，让辅助端只出现简单的 $I$ 和 $Z$。数据 $X$ 基的投影分解正好能做到这一点。
+
+定义
+
+$$
+|-\rangle=\frac{|0\rangle-|1\rangle}{\sqrt2},
+\qquad
+P_+=|+\rangle\langle+|,
+\qquad
+P_-=|-\rangle\langle-|.
+$$
+
+因为 $|+\rangle$、$|-\rangle$ 是 $X$ 的正负本征态，
+
+$$
+I=P_++P_-,
+\qquad
+X=P_+-P_-.
+$$
+
+在固定的 $d\otimes a$ 顺序下，原来的 CNOT 是
+
+$$
+\operatorname{CNOT}_{a\to d}
+=
+I_d\otimes|0\rangle\langle0|_a
++
+X_d\otimes|1\rangle\langle1|_a.
+$$
+
+将上述 $I$、$X$ 分解代入，再按 $P_+$、$P_-$ 合并：
+
+$$
+\begin{aligned}
+\operatorname{CNOT}_{a\to d}
+&=
+(P_++P_-)_d\otimes|0\rangle\langle0|_a
++
+(P_+-P_-)_d\otimes|1\rangle\langle1|_a\\
+&=
+P_{+,d}\otimes
+\bigl(|0\rangle\langle0|+|1\rangle\langle1|\bigr)_a\\
+&\quad+
+P_{-,d}\otimes
+\bigl(|0\rangle\langle0|-|1\rangle\langle1|\bigr)_a\\
+&=
+\boxed{P_{+,d}\otimes I_a+P_{-,d}\otimes Z_a}.
+\end{aligned}
+$$
+
+这一步只改写了**同一个算符**，没有插入换基门，没有测量数据的 $X$，也没有把计算基 CNOT 换成 $\operatorname{CNOT}_{d\to a}$。
+
+它也说明了这里的相位回踢：当数据处于 $|-\rangle_d$ 时，辅助端控制的数据 $X$ 作用贡献本征值 $-1$，表现为辅助态中 $|1\rangle_a$ 分量相对 $|0\rangle_a$ 分量多一个负号，即辅助端的 $Z$。
+
+现在对辅助端做共轭，数据投影不动，立即得到
+
+$$
+\begin{aligned}
+W_U
+&=
+(I\otimes U)
+(P_+\otimes I+P_-\otimes Z)
+(I\otimes U^\dagger)\\
+&=
+\boxed{
+P_+\otimes I+P_-\otimes UZU^\dagger
+}.
+\end{aligned}
+$$
+
+改写的收益已经出现：一般 $U$ 把辅助端的 $Z$ 变成了 $UZU^\dagger$；不需要对整个双比特算符逐分量展开。
+
+这里应分清两件事。把 CNOT 写成 $P_+\otimes I+P_-\otimes Z$，没有改变原来的门；用 $UZU^\dagger$ 替换其中的 $Z$，才得到一般不同于原 CNOT 的新门 $W_U$。
+
+两个投影描述的是相干的量子控制，不是测量已经产生的两种经典结果。若数据处于两个 $X$ 基态的叠加，$W_U$ 必须对整个叠加保持线性作用。
+
+### 3.3 恒等式成立，不等于只消耗资源就能低成本实现
+
+若 $[U,Z]=0$，则 $UZU^\dagger=Z$，从而
+
+$$
+W_U=\operatorname{CNOT}_{a\to d}.
+$$
+
+这时相互作用确实简化。但对一般 $U$，仍须实现 $W_U$，并执行测量后的 $UX^mU^\dagger$ 校正。即使 $UZU^\dagger$ 本身是 Clifford，也不能据此认定它的相干受控版本 $W_U$ 是 Clifford。
+
+因此，任意 $U$ 都满足上述线路恒等式，但不能由此断言任意 $U$ 都能只靠一个 $U|+\rangle$ 资源和 Clifford 操作实现。资源制备、相干相互作用和测后校正的代价，需要分别检查。
+
+## 4. 一般 $U$ 的原位构造：从已有线路缺少什么开始
+
+现在重新要求输出位于数据线 $d$。这不是对上一节的 $W_U$ 再换一种写法，而是构造另一条实际线路：测量辅助线，并保留数据线。
+
+第二节已经给出一个成功的特例：资源为 $|T\rangle$ 时，使用 $\operatorname{CNOT}_{d\to a}$ 和辅助线测量即可。下面把资源换成 $|U\rangle$，先检查这条简单候选线路哪里正确、哪里不正确，再决定要补什么门。
+
+### 4.1 用两个 $X$ 基输入检查候选线路
+
+资源直接给出了 $U|+\rangle$。因此，检查候选线路时，可以先问它对数据输入 $|+\rangle$ 是否已经正确，再问它能否同时正确处理正交方向 $|-\rangle$。这就是此处选择 $X$ 基作为测试输入的理由。
+
+为了统一计算，给这两个基态一个比特标签：
+
+$$
+|s_X\rangle
+:=
+Z^s|+\rangle
+=
+\frac1{\sqrt2}
+\sum_x(-1)^{sx}|x\rangle,
+\qquad
+s\in\{0,1\}.
+$$
+
+其中 $s=0$ 表示 $|+\rangle$，$s=1$ 表示 $|-\rangle$，并且
+
+$$
+X|s_X\rangle=(-1)^s|s_X\rangle.
+$$
+
+**$s$ 是输入的相干基标签；$m$ 才是辅助线计算基测量的记录。** 数据可以是两个 $s$ 分量的叠加，我们没有测量 $s$。
+
+先让辅助态为任意归一化向量
+
+$$
+|\eta\rangle_a=\sum_y\eta_y|y\rangle_a.
+$$
+
+这样，同一条计算规则既能用于原资源，也能用于稍后可能修改的资源。执行 CNOT 后，测量前的联合态为
+
+$$
+\begin{aligned}
+\operatorname{CNOT}_{d\to a}
+|s_X\rangle_d|\eta\rangle_a
+&=
+\frac1{\sqrt2}
+\sum_{x,y}(-1)^{sx}\eta_y
+|x\rangle_d|y\oplus x\rangle_a\\
+&=
+\frac1{\sqrt2}
+\sum_{m,x}(-1)^{sx}\eta_{x\oplus m}
+|x\rangle_d|m\rangle_a.
+\end{aligned}
+$$
+
+第二行复用了 $y=x\oplus m$ 的换元。取辅助线测量分支，得到
+
+$$
+\begin{aligned}
+{}_a\langle m|
+\operatorname{CNOT}_{d\to a}
+|s_X\rangle_d|\eta\rangle_a
+&=
+\frac1{\sqrt2}
+\sum_x(-1)^{sx}\eta_{x\oplus m}|x\rangle_d\\
+&=
+\boxed{
+\frac1{\sqrt2}Z_d^sX_d^m|\eta\rangle_d
+}.
+\end{aligned}
+$$
+
+最后一行中，$|\eta\rangle_d$ 表示把同样的系数写到数据空间。$X^m$ 负责标签翻转，$Z^s$ 负责数据 $X$ 基输入带来的符号。
+
+### 4.2 固定零测量记录后，只需补偿哪个输入方向
+
+先固定 $m=0$，并令 $|\eta\rangle=|U\rangle=U|+\rangle$。暂时省略共同的因子 $1/\sqrt2$，比较候选线路与目标：
+
+| 数据输入 | 候选线路的零分支输出 | 目标门的输出 |
+|---|---|---|
+| $\lvert+\rangle$ | $U\lvert+\rangle$ | $U\lvert+\rangle$ |
+| $\lvert-\rangle$ | $ZU\lvert+\rangle$ | $U\lvert-\rangle=UZ\lvert+\rangle$ |
+
+这是**同一个测量记录 $m=0$ 下，对两个不同基输入的比较**，不是在比较两个测量结果。
+
+$|+\rangle$ 输入已经正确；$|-\rangle$ 输入却把所需的 $UZ$ 变成了 $ZU$。一般 $U$ 不与 $Z$ 对易，失配就在这里。
+
+因此，只在数据的 $|-\rangle$ 分量上修改辅助资源：让它在进入 CNOT 前变为 $R|U\rangle$，而在 $|+\rangle$ 分量上仍保持 $|U\rangle$。根据上一节的测量规则，修改后的负输入在零记录下给出
+
+$$
+\frac1{\sqrt2}ZR|U\rangle.
+$$
+
+要得到 $U|-\rangle/\sqrt2$，需要且只需要
+
+$$
+\boxed{
+R|U\rangle=ZU|-\rangle
+}.
+$$
+
+共同的分支振幅 $1/\sqrt2$ 已经由正确的正输入确定；两个输入方向还必须保持正确的相对相位，不能分别只在“忽略各自相位”的意义下匹配。
+
+所需操作是相干受控门
+
+$$
+\Lambda_X(R)
+:=
+P_{+,d}\otimes I_a
++
+P_{-,d}\otimes R_a.
+$$
+
+它不改变数据的 $X$ 基标签，只按该标签决定是否修改资源。一般若无条件执行 $R$，会同时改变已经正确的正输入；若先测量数据的 $X$ 再按结果执行 $R$，则会丢失两个输入分量之间的相干，不能替代这个门。
+
+如果 $[U,Z]=0$，表中两行原本就都正确，可以取 $R=I$。所以，$R$ 是针对这套候选线路的失配而引入的补偿，**不是“输出改回数据线”所必需支付的一项固定代价**。
+
+一个直接满足约束的酉选择是
+
+$$
+\boxed{
+R_U:=ZUZU^\dagger
+}.
+$$
+
+各因子均为酉算符，而且
+
+$$
+R_U|U\rangle
+=
+ZUZU^\dagger U|+\rangle
+=
+ZU|-\rangle.
+$$
+
+于是，待核验的完整顺序为：先执行 $\Lambda_X(R_U)$，再执行 $\operatorname{CNOT}_{d\to a}$，随后测量辅助线，最后按记录校正数据线。
+
+### 4.3 另一测量记录留下什么，以及怎样校正
+
+令这条原位线路的分支算符为 $K_m$：
+
+$$
+K_m|\psi\rangle_d
+:=
+{}_a\langle m|
+\operatorname{CNOT}_{d\to a}
+\Lambda_X(R_U)
+\bigl(|\psi\rangle_d|U\rangle_a\bigr).
+$$
+
+输入和输出现在都属于数据空间，不需要跨线映射 $J$。
+
+对 $s=0,1$，资源约束统一写成
+
+$$
+R_U^s|U\rangle=Z^sU|s_X\rangle.
+$$
+
+这里的指数只是在 $I$ 与 $R_U$ 之间选择，不要求 $R_U^2=I$。把它代入辅助线测量规则：
+
+$$
+\begin{aligned}
+K_m|s_X\rangle
+&=
+\frac1{\sqrt2}Z^sX^mZ^sU|s_X\rangle\\
+&=
+\frac{(-1)^{sm}}{\sqrt2}X^mU|s_X\rangle\\
+&=
+\frac1{\sqrt2}X^mUX^m|s_X\rangle.
+\end{aligned}
+$$
+
+第二步用了
+
+$$
+Z^sX^mZ^s=(-1)^{sm}X^m,
+$$
+
+第三步用了
+
+$$
+X^m|s_X\rangle=(-1)^{sm}|s_X\rangle.
+$$
+
+没有把 Pauli 算符无条件穿过一般的 $U$。由于等式对一组基成立，由线性性得到
+
+$$
+\boxed{
+K_m=\frac1{\sqrt2}X^mUX^m
+}.
+$$
+
+因此，真正的两个测量分支是
+
+$$
+K_0=\frac{U}{\sqrt2},
+\qquad
+K_1=\frac{XUX}{\sqrt2}.
+$$
+
+零记录不需要再校正。对于记录 $1$，寻找 $C_U$ 使
+
+$$
+C_U(XUX)=U.
+$$
+
+右乘 $XUX$ 的逆，便得到
+
+$$
+\boxed{
+C_U
+=
+U(XUX)^\dagger
+=
+UXU^\dagger X
+}.
+$$
+
+于是
+
+$$
+\boxed{
+C_U^mK_m=\frac{U}{\sqrt2}
+}.
+$$
+
+同样，$C_U^m$ 只表示根据比特 $m$ 选择 $I$ 或 $C_U$，不意味着 $C_U$ 是二阶门。
+
+最后核对概率：
+
+$$
+K_m^\dagger K_m
+=
+\frac12(X^mUX^m)^\dagger(X^mUX^m)
+=
+\frac12I.
+$$
+
+两个记录各以概率 $1/2$ 出现。归一化前的校正输出都是 $U|\psi\rangle/\sqrt2$，归一化后的输出都是 $U|\psi\rangle_d$。
+
+这条一般原位线路因此被确定为
+
+$$
+\boxed{
+\Lambda_X(R_U)
+\;\longrightarrow\;
+\operatorname{CNOT}_{d\to a}
+\;\longrightarrow\;
+\text{测量辅助线 }a
+\;\longrightarrow\;
+\text{在数据线执行 }C_U^m
+}.
+$$
+
+其中第一项是测量前的量子控制，最后一项是测量后的经典前馈。它与第三节的辅助线输出构造，是测量位置和相互作用都不同的两条线路。
+
+### 4.4 哪些条件使一般构造退化为简单的注入线路
+
+现在才需要判断一般构造中的两个附加要求是否昂贵：相干受控门 $\Lambda_X(R_U)$，以及测后的 $C_U$。
+
+如果 $U$ 在计算基中对角，即 $[U,Z]=0$，则
+
+$$
+R_U=ZUZU^\dagger=UZZU^\dagger=I.
+$$
+
+相干受控门完全消失，剩下第二节那种 CNOT、辅助线测量和数据线校正。
+
+但对角性本身不保证校正是 Clifford。为判断这一点，记 Clifford 群为 $\mathcal C_2$；Clifford 层级的第三层 $\mathcal C_3$ 由满足以下性质的酉门组成：它通过共轭把每个 Pauli 算符映为 Clifford 门。
+
+若 $U\in\mathcal C_3$，则
+
+$$
+UXU^\dagger\in\mathcal C_2.
+$$
+
+Clifford 门对乘法封闭，$X$ 也属于 Clifford，因此
+
+$$
+C_U=(UXU^\dagger)X\in\mathcal C_2.
+$$
+
+所以，对这里的**单比特对角第三层门**，只需资源 $|U\rangle$、Clifford 操作、计算基测量和经典前馈。两个条件的作用不同：对角性消去相干受控门，第三层条件保证剩下的校正是 Clifford。
+
+第三层条件在这里是保证校正代价的充分条件；不能仅凭某一个校正恰好是 Clifford，就反推一般 $U$ 必在第三层。对于非对角 $U$，即使 $R_U$ 本身是 Clifford，也仍不能自动把 $\Lambda_X(R_U)$ 当作 Clifford。
+
+用 $T$ 核对一般公式。对计算基矢，
+
+$$
+\begin{aligned}
+C_T|x\rangle
+&=
+TXT^\dagger X|x\rangle\\
+&=
+\omega^{x-(x\oplus1)}|x\rangle\\
+&=
+\omega^{2x-1}|x\rangle
+=
+\omega^{-1}i^x|x\rangle.
+\end{aligned}
+$$
+
+因此
+
+$$
+\boxed{C_T=\omega^{-1}S}.
+$$
+
+这与第二节使用的 $S$ 只差测量分支的整体相位。又因为
+
+$$
+TXT^\dagger=\omega^{-1}SX,
 \qquad
 TZT^\dagger=Z,
 $$
 
-$T$ 的 Pauli 共轭像属于 Clifford，符合第三层条件。
+两个 Pauli 生成元的共轭像都是 Clifford，所以 $T\in\mathcal C_3$。其中 $TXT^\dagger=(X+Y)/\sqrt2$ 不是 Pauli，故 $T$ 本身不是 Clifford。
 
-在测量已完成、$m$ 已成为经典记录后，$\omega^m$ 是各自条件态的整体相位，可以忽略。这与在相干受控门内部丢弃一个控制分支的相位不同。
-
-$S$ 不是 Pauli。可以实际执行它，也可以在支持相应后续门和测量适配的 Clifford frame 中跟踪；只记录 Pauli frame，不能直接视为已经处理了 $S$ 校正。
-
-对角性本身仍不保证校正是 Clifford。例如采用
+作为对比，取
 
 $$
-\sqrt T=\operatorname{diag}(1,e^{i\pi/8})
+\sqrt T=\operatorname{diag}(1,e^{i\pi/8}).
 $$
 
-时，同样的相位标签计算给出
+同样的相位标签计算给出
 
 $$
 C_{\sqrt T}=e^{-i\pi/8}T.
 $$
 
-受控 $R_{\sqrt T}$ 虽然消失，条件校正却仍含非 Clifford 门 $T$。
+它仍然是对角门，故受控 $R_{\sqrt T}$ 消失；但测后校正仍包含非 Clifford 门 $T$，不能当作与 $T$ 注入同样的 Clifford-only 消费线路。
 
-## 5. 从资源故障读出输出算符
+### 4.5 为什么理想线路没有唯一确定受控门的全部作用
 
-下面固定讨论上一节的标准 $T$ 线路，即 $R_T=I$，并假定 CNOT、测量和 $S^m$ 前馈本身理想。资源错误发生在资源制备之后、进入 CNOT 之前。改变线路、资源约定或前馈规则后，需要重新计算分支。
+原位构造最初只要求
 
-先注意：理想资源下的等概率结果不是任意资源的普遍性质。若资源换成
+$$
+R\,U|+\rangle=ZU|-\rangle.
+$$
+
+这是对一个向量的约束，不是对辅助空间全部向量的规定。
+
+输入侧的 $U|+\rangle,U|-\rangle$ 是一组正交归一基，输出侧的 $ZU|-\rangle,ZU|+\rangle$ 也是。因此，对任意实数 $\theta$，规定
+
+$$
+R_\theta U|+\rangle=ZU|-\rangle,
+\qquad
+R_\theta U|-\rangle=e^{i\theta}ZU|+\rangle,
+$$
+
+都会得到满足同一资源态约束的酉门。$\theta=0$ 给出前面选择的 $R_U$。
+
+对于理想资源 $U|+\rangle$，这些延拓在受控门中实际用到的作用相同，所以给出相同的 $K_m$。但资源一旦偏离这个理想向量，受控门就可能作用到其正交方向；不同延拓在这个方向上的相位不同，错误传播也可能不同。理想分支相同，不足以保证噪声行为相同。
+
+这种延拓自由度，也不同于给整个 $R$ 随便乘一个相位。若替换为 $e^{i\chi}R$，受控门变为
+
+$$
+\Lambda_X(e^{i\chi}R)
+=
+P_+\otimes I
++
+e^{i\chi}P_-\otimes R.
+$$
+
+相位只乘在数据的负输入分量上，是尚未测量的联合态中的相对相位，不能丢弃。第二节在测量后忽略 $\omega^m$，则是在每个已经确定的经典记录下忽略整个条件态的整体相位，两者不是同一个操作。
+
+## 5. 回到标准 $T$ 线路：资源故障怎样进入数据
+
+以下固定使用第二节的标准 $T$ 线路，即 $R_T=I$。资源故障发生在资源制备之后、CNOT 之前；CNOT、测量和实际采用的 $S^m$ 前馈均假定理想。$K_m$ 重新表示这条标准线路使用理想 $|T\rangle$ 时的分支。
+
+这个固定十分重要：不能仅凭一般原位构造的理想输出相同，就把下面的错误传播公式移用于不同的受控门延拓或前馈规则。
+
+### 5.1 先检查故障是否改变测量概率
+
+第二节的等概率结论来自资源的具体振幅，不是所有辅助态的普遍性质。
+
+若资源换成
 
 $$
 |\eta\rangle_a=\sum_y\eta_y|y\rangle_a,
 $$
 
-同一次异或换元直接给出
+把第二节求和中的 $\omega^y/\sqrt2$ 换成 $\eta_y$，同一次 XOR 换元给出
 
 $$
 K_m[\eta]
@@ -780,21 +944,25 @@ K_m[\eta]
 \sum_x\eta_{x\oplus m}|x\rangle\langle x|.
 $$
 
-因此
+于是
 
 $$
 K_m[\eta]^\dagger K_m[\eta]
 =
-\sum_x|\eta_{x\oplus m}|^2|x\rangle\langle x|,
+\sum_x|\eta_{x\oplus m}|^2|x\rangle\langle x|.
 $$
 
-它未必等于 $I/2$。例如资源为 $|0\rangle$ 时，$K_m[0]=|m\rangle\langle m|$，线路在读取输入的计算基信息，而不是以两个等概率酉分支实现 $T$。
+它未必等于 $I/2$。例如资源为 $|0\rangle$ 时，
 
-### 5.1 先传播 Pauli，再读取测量记录
+$$
+K_m[0]=|m\rangle\langle m|,
+$$
 
-仍用 $K_m$ 表示理想 $|T\rangle$ 的分支。将资源换成 $P|T\rangle$ 后，相应分支记为 $K_m^{(P)}$。
+线路实际上在读取数据的计算基信息，而不是以两个等概率酉分支实现目标门。
 
-对以数据为控制、辅助为目标的 CNOT，计算基标签规则给出两条传播关系：
+下面分别讨论资源上的 Pauli $Z$ 和 $X$ 故障。将资源换成 $P|T\rangle$ 后的分支记为 $K_m^{(P)}$。
+
+对于 $\operatorname{CNOT}_{d\to a}$，目标端的 Pauli 传播关系为
 
 $$
 \operatorname{CNOT}_{d\to a}(I_d\otimes Z_a)
@@ -808,9 +976,15 @@ $$
 (I_d\otimes X_a)\operatorname{CNOT}_{d\to a}.
 $$
 
-第一条表示目标端的 $Z$ 相位传播到控制和目标两端；第二条表示目标端的 $X$ 可以直接穿过 CNOT。
+第一条也可从标签直接理解：输入资源的符号 $(-1)^y$，在输出标签为 $x$ 与 $x\oplus y$ 时写成
 
-随后对辅助线取 $\langle m|$。利用
+$$
+(-1)^y=(-1)^x(-1)^{x\oplus y}.
+$$
+
+第二条则因为在目标标签上先翻转一次，或在 XOR 后再翻转一次，结果相同。
+
+随后取辅助线测量分支，并使用
 
 $$
 \langle m|Z=(-1)^m\langle m|,
@@ -818,7 +992,7 @@ $$
 \langle m|X=\langle m\oplus1|,
 $$
 
-立即得到
+得到
 
 $$
 \boxed{
@@ -830,21 +1004,16 @@ K_m^{(X)}=K_{m\oplus1}
 }.
 $$
 
-这两条关系已经包含了所需错误传播信息，无需为每个错误重新计算一个 $2\times2$ 矩阵。
-
-它们也给出
+由理想分支的 $K_m^\dagger K_m=I/2$ 可知，这两类故障下也分别有
 
 $$
-\bigl(K_m^{(Z)}\bigr)^\dagger K_m^{(Z)}
-=
-\bigl(K_m^{(X)}\bigr)^\dagger K_m^{(X)}
-=
-\frac12I.
+\bigl(K_m^{(P)}\bigr)^\dagger K_m^{(P)}=\frac12I,
+\qquad P=X,Z.
 $$
 
-因此，理想资源、单独的资源 $Z$ 故障和单独的资源 $X$ 故障，在这条线路中都产生两个等概率记录。这个结论来自各自的分支算符，而不是对一般噪声的预设。
+因此，理想资源、单独的资源 $Z$ 故障和单独的资源 $X$ 故障，都产生两个等概率记录。这是针对这些故障逐一得到的结论。
 
-### 5.2 资源 $Z$ 故障成为数据 $Z$ 故障
+### 5.2 资源 $Z$ 故障直接成为输出 $Z$ 故障
 
 因为 $S$ 与 $Z$ 对易，
 
@@ -858,25 +1027,23 @@ S^mK_m^{(Z)}
 \end{aligned}
 $$
 
-所以归一化并忽略分支整体相位后，两个记录都给出
+归一化并忽略分支整体相位后，两个记录都给出
 
 $$
 ZT|\psi\rangle.
 $$
 
-资源上的 $Z$ 故障直接变为目标门之后的数据 $Z$ 故障。测量前馈消除了理想线路的随机分支差别，却没有消除这次资源错误。
+资源上的 $Z$ 故障变成了目标门之后的数据 $Z$ 故障。原来的前馈只消除了理想线路的随机分支差别，并没有消除资源错误。
 
-### 5.3 资源 $X$ 故障交换分支，但不会报告故障标签
+### 5.3 资源 $X$ 故障交换分支，但测量记录不报告这个故障
 
-对资源 $X$ 故障，实际前馈仍按真实读到的 $m$ 执行 $S^m$，不能按未知的故障情况另选规则。因此
+发生资源 $X$ 故障时，实验仍然只能按真实读到的 $m$ 执行 $S^m$。不能因为分析中知道有故障，就改用另一套前馈：
 
 $$
-S^mK_m^{(X)}
-=
-S^mK_{m\oplus1}.
+S^mK_m^{(X)}=S^mK_{m\oplus1}.
 $$
 
-代入已经求出的理想分支，
+代入理想分支，
 
 $$
 S^0K_0^{(X)}
@@ -888,23 +1055,21 @@ S^1K_1^{(X)}
 \frac1{\sqrt2}ST.
 $$
 
-利用
+令理想输出为
 
 $$
-T^\dagger=S^\dagger T=ZST,
+|\phi\rangle:=T|\psi\rangle.
 $$
 
-令理想输出为 $|\phi\rangle:=T|\psi\rangle$，则归一化后的两个故障分支，至多相差整体相位，为
+利用 $T^\dagger=S^\dagger T$，归一化后的两个故障分支，忽略各自整体相位，为
 
 $$
-m=0:\quad S^\dagger|\phi\rangle=ZS|\phi\rangle,
-$$
-
-$$
+m=0:\quad S^\dagger|\phi\rangle,
+\qquad
 m=1:\quad S|\phi\rangle.
 $$
 
-两个分支之间确实差一个 $Z$，但这个结论是在分析“资源已发生 $X$ 故障”这一情形时得到的。实验中的记录 $m$ 并不同时告诉我们该故障是否发生，因为
+因为 $S^\dagger=ZS$，这两个故障分支之间确实差一个 $Z$。但这个关系是在“资源已经发生 $X$ 故障”的条件下推导的。实际记录 $m$ 不会同时告诉我们故障是否发生：
 
 $$
 \Pr(m\mid\text{无资源故障})
@@ -914,9 +1079,9 @@ $$
 \frac12.
 $$
 
-因此，不能仅凭已知 $m$ 就把上述只在故障情形中出现的 $Z^{1-m}$ 当成已知 byproduct 更新 frame。若无条件执行这个额外更新，则在没有资源故障的 $m=0$ 分支中，反而会把正确的 $|\phi\rangle$ 改成 $Z|\phi\rangle$。
+所以，不能只凭 $m$，就把仅在故障情形中出现的 $Z^{1-m}$ 当成已知副产物更新 frame。若对所有 $m=0$ 的实验都额外补一个 $Z$，反而会把没有资源故障时本来正确的输出改错。
 
-主来源式 (3) 写出[^S001]
+Jacinto 等人式 (3) 使用了表达式[^S001]
 
 $$
 S|\phi\rangle
@@ -924,18 +1089,7 @@ S|\phi\rangle
 \frac{\omega}{\sqrt2}(I-iZ)|\phi\rangle.
 $$
 
-这条算符等式可由 $Z$ 的两个本征投影直接读出：
-
-$$
-S
-=
-\frac{I+Z}{2}
-+i\frac{I-Z}{2}
-=
-\frac{\omega}{\sqrt2}(I-iZ).
-$$
-
-在本文固定的 CNOT 方向、记录标签和 $S^m$ 前馈约定下，式 (3) 直接对应 $X$ 故障的 $m=1$ 分支；$m=0$ 分支则是
+在本文固定的记录标签和 $S^m$ 前馈下，它对应上述 $X$ 故障的 $m=1$ 条件态；$m=0$ 的条件态则是
 
 $$
 S^\dagger|\phi\rangle
@@ -943,33 +1097,29 @@ S^\dagger|\phi\rangle
 \frac{\omega^{-1}}{\sqrt2}(I+iZ)|\phi\rangle.
 $$
 
-若要把两个有记录分支都写成 $S|\phi\rangle$，还需说明如何处理二者之间的 $Z$ 差别，例如另有信息确认故障事件并作相应修正。仅知道注入测量位，不提供这种信息。另一方面，在对记录取平均或执行合适检查后，两种相干组合又可能产生相同的随机错误描述；这是下一节要区分的对象。
+这两个表达式都只含 $I$ 与 $Z$，但仍是具有确定相对相位的相干组合。要把它们变成随机错误描述，还需要说明保留了哪些记录，或者实际执行了什么平均与测量。
 
-## 6. 相干分支、丢弃记录与 syndrome 投影
+## 6. 什么时候可以使用随机 $Z$ 错误模型
 
-### 6.1 固定记录下的相干组合，不等于两个随机选项
+### 6.1 按记录前馈后，再忽略注入记录
 
-对固定的 $X$ 故障分支，输出一般包含
+先看固定记录下的状态。写成
 
 $$
-|\phi\rangle
-\quad\text{与}\quad
-Z|\phi\rangle
+\frac{\omega}{\sqrt2}(I-iZ)|\phi\rangle
 $$
 
-之间确定的相对相位。写成 $(I-iZ)|\phi\rangle/\sqrt2$，并不意味着线路已经以一半概率选择 $I$、一半概率选择 $Z$。
+不等于已经以一半概率选择 $|\phi\rangle$、一半概率选择 $Z|\phi\rangle$。两项之间有确定的相对相位，而且这两个向量未必正交。例如 $|\phi\rangle=|0\rangle$ 时，$Z|\phi\rangle=|\phi\rangle$，它们根本不是两个可区分状态。
 
-这两个向量甚至未必正交。例如 $|\phi\rangle=|0\rangle$ 时，$Z|\phi\rangle=|\phi\rangle$，根本不是两个可区分的错误状态。若要把相干项变成概率，必须说明发生了哪一种平均或哪一次能够区分它们的测量。
-
-先看不再保留注入记录的情形。用密度算符
+为了讨论不保留记录的情况，用密度算符
 
 $$
 \sigma=|\phi\rangle\langle\phi|
 $$
 
-表示理想输出；如果以概率 $r_j$ 产生状态 $\sigma_j$ 而不保留标签 $j$，相应状态就是加权平均 $\sum_jr_j\sigma_j$。
+表示理想输出。若以概率 $r_j$ 产生状态 $\sigma_j$ 而不保留标签 $j$，状态就用加权平均 $\sum_jr_j\sigma_j$ 描述。
 
-对资源 $X$ 故障，在执行 $S^m$ 前馈以后，两个归一化条件态的密度算符是
+资源 $X$ 故障在完成实际 $S^m$ 前馈后，两个归一化条件态的密度算符为
 
 $$
 \sigma_0=S^\dagger\sigma S,
@@ -977,7 +1127,18 @@ $$
 \sigma_1=S\sigma S^\dagger.
 $$
 
-它们的概率已经由分支算符证明为 $1/2$。因此，不再利用 $m$ 的边缘输出为
+利用
+
+$$
+S
+=
+\frac{I+Z}{2}
++i\frac{I-Z}{2}
+=
+\frac{\omega}{\sqrt2}(I-iZ),
+$$
+
+以及其伴随，得到
 
 $$
 \begin{aligned}
@@ -991,19 +1152,23 @@ $$
 +
 \frac14(I-iZ)\sigma(I+iZ)\\
 &=
-\boxed{\frac12\sigma+\frac12Z\sigma Z}.
+\boxed{
+\frac12\sigma+\frac12Z\sigma Z
+}.
 \end{aligned}
 $$
 
-第二行中的交叉项符号相反，平均后恰好抵消。于是，**对这条具体线路中的资源 $X$ 故障，先按记录完成前馈、再忽略记录，就已经得到一个随机 $Z$ 的边缘通道，并不需要先测量 syndrome。**
+两个条件态中的交叉项符号相反，平均后抵消。因此，**对这条线路中的资源 $X$ 故障，先按记录完成前馈，再忽略记录，就已经得到随机 $Z$ 的边缘输出，不需要先测量 syndrome。**
 
-但它只是忽略 $m$ 后的描述。保留 $m$ 时，条件态仍分别是 $S^\dagger\sigma S$ 和 $S\sigma S^\dagger$，一般不能把整个带记录过程替换成与 $m$ 无关的随机 $Z$ 模型。若后续还要按 $m$ 采取其他操作，必须保留这一区别。
+这里的 $1/2$ 是条件于该资源 $X$ 故障后的有效混合权重，不是在宣称实际资源总有一半概率出错。
 
-### 6.2 真正的 syndrome 投影需要什么条件
+保留 $m$ 时，状态仍分别是 $S^\dagger\sigma S$ 和 $S\sigma S^\dagger$。一般不能把整个带记录的过程替换成与 $m$ 无关的同一个随机 $Z$ 模型，尤其在后续还要利用 $m$ 时。
 
-另一种消除相干项的方式，是测量一个能区分 $|\phi\rangle$ 与 $Z|\phi\rangle$ 的检查。
+### 6.2 实际检查怎样把相干项分到不同 syndrome
 
-这里 $|\phi\rangle$ 可以表示包含其他量子比特在内的完整理想输出，$Z$ 表示其中待检测的特定 Pauli 错误。设待测的厄米 Pauli 检查为 $G$，必须同时满足
+另一种方式是实际测量一个能够区分 $|\phi\rangle$ 与 $Z|\phi\rangle$ 的检查。这里 $|\phi\rangle$ 可以表示包含其他量子比特在内的完整理想输出，$Z$ 则表示其中待检测的特定 Pauli 错误。
+
+设检查 $G$ 是本征值为 $\pm1$ 的厄米 Pauli 算符，并满足
 
 $$
 G|\phi\rangle=|\phi\rangle,
@@ -1011,19 +1176,19 @@ G|\phi\rangle=|\phi\rangle,
 GZ=-ZG.
 $$
 
-第一个条件保证理想输出本来就有确定的检查值；第二个条件保证该错误翻转检查值。于是
+这两个条件缺一不可：理想输出必须本来就有确定检查值，而错误必须翻转该值。于是
 
 $$
 GZ|\phi\rangle=-Z|\phi\rangle.
 $$
 
-两个向量属于不同本征空间，所以正交。相应投影为
+两个向量属于不同本征空间，因而正交。检查的投影算符是
 
 $$
 \Pi_\pm=\frac{I\pm G}{2}.
 $$
 
-以 $S|\phi\rangle$ 分支为例，
+以 $S|\phi\rangle$ 为例，
 
 $$
 \Pi_+S|\phi\rangle
@@ -1035,18 +1200,18 @@ $$
 -\frac{i\omega}{\sqrt2}Z|\phi\rangle.
 $$
 
-两个未归一化向量的范数平方各为 $1/2$，所以检查确实以一半概率得到理想态，一半概率得到 $Z$ 错误态。$S^\dagger|\phi\rangle$ 分支只改变这些分量的相位，检查概率相同。
+两个未归一化向量的范数平方各为 $1/2$。这次检查确实把相干组合分到不同的 syndrome，即不同检查结果中；忽略检查结果时，得到相应概率混合。对 $S^\dagger|\phi\rangle$，分量相位不同，但检查概率相同。
 
-这才是具有错误区分作用的 syndrome 投影。不能只因为某个检查“含有 $X$”就套用结论：若理想 $|\phi\rangle$ 对它没有确定本征值，测量本身就可能改变本来正确的输出。
+不能只因为某个检查“含有 $X$”就套用这个结论。若理想输出不是它的确定本征态，测量可能改变本来正确的状态；若它不与待检测错误反对易，也不能区分上述两项。
 
-在编码协议中，也不能在每次单独的 $T$ 注入后随意测量原有 $X$ 检查。应在理想协议及必要校正保证检查值已确定的位置测量，或者使用相应传播后的检查。
+因此，在编码协议中不能在每次单独的 $T$ 注入之后随意测量原有 $X$ 检查。应在理想协议及必要校正保证检查值确定的位置测量，或者测量按协议正确传播后的检查。
 
-### 6.3 随机 $Z$ 模型也可以在资源输入端建立
+### 6.3 在资源输入端先建立随机模型
 
-还可以在注入以前，对资源态进行保持目标 $|T\rangle$ 的随机化。令
+还可以在注入前，直接整理已经制备好的资源噪声。定义
 
 $$
-A=TXT^\dagger=\omega^{-1}SX.
+A:=TXT^\dagger=\omega^{-1}SX.
 $$
 
 它是厄米 Clifford 酉算符，并满足
@@ -1057,12 +1222,20 @@ A|T\rangle=|T\rangle,
 AZ=-ZA.
 $$
 
-对已经制备好的单比特资源态 $\rho_R$，等概率施加 $I$ 或 $A$ 并对随机选择取平均，得到
+因此，两个正交资源态 $|T\rangle$ 与 $Z|T\rangle$ 分别具有 $A$ 的本征值 $+1$ 和 $-1$。
+
+对已制备的单资源状态 $\rho_R$，等概率施加 $I$ 或 $A$，并对随机选择取平均：
 
 $$
 \mathcal T_A(\rho_R)
 =
-\frac12(\rho_R+A\rho_RA)
+\frac12(\rho_R+A\rho_RA).
+$$
+
+两个本征态之间的相干项在 $A$ 共轭下反号，对角权重则保持不变，所以平均后得到
+
+$$
+\mathcal T_A(\rho_R)
 =
 \rho_T(p),
 $$
@@ -1081,110 +1254,128 @@ $$
 p=1-\langle T|\rho_R|T\rangle.
 $$
 
-这一单资源 twirling 的推导和适用条件见 [[Clifford Twirling 与魔态错误模型]] §6。它保持对目标态的保真度，只消除 $|T\rangle$ 与 $Z|T\rangle$ 之间的相干；它不是完整 Clifford 群的通道平均，也不是一次 syndrome 检测。
+这就是这里需要的资源态 twirling。它保持对目标态的保真度，并没有提高单个资源的质量。它不是完整 Clifford 群的通道平均，也不是一次用于报告错误的 syndrome 检测；完整推导见 [[Clifford Twirling 与魔态错误模型]] §6。
 
-将这个资源混合送入本文的理想注入线路。理想资源与 $Z$ 故障资源对每个 $m$ 都给出概率 $1/2$，因此条件于任意注入记录，二者的相对权重仍分别为 $1-p$ 与 $p$。校正后的输出为
+将这个混合资源送入理想 $T$ 注入线路。理想资源与 $Z$ 故障资源对任意 $m$ 都有概率 $1/2$，所以条件于 $m$ 后，两个资源分量的相对权重仍为 $1-p$ 和 $p$。校正后的条件输出因此是
 
 $$
-\sigma_m=(1-p)\sigma+pZ\sigma Z.
+\boxed{
+\sigma_m=(1-p)\sigma+pZ\sigma Z
+}.
 $$
 
-这里甚至不必丢弃 $m$，随机 $Z$ 的条件输出模型就已经成立；它来自资源端已建立的混合模型。
+这里不必丢弃注入记录，随机 $Z$ 模型就在每个记录下成立；它来自输入端已经建立的概率混合。相比之下，上一节资源 $X$ 故障的随机模型来自对不同注入记录取平均，而 syndrome 投影又是一项实际检查操作。
 
-若实际实施 twirling，随机 Clifford 操作的误差也应计入噪声。若没有实施，只在分析中用 twirled 模型替换真实资源态，则须说明为何这种替换适合当前所研究的量，而不能把它当成每个有记录分支的自动物理等价。
+若真正实施 twirling，随机 Clifford 门的误差也必须计入。若没有实施，而只在分析中用 twirled 模型替换真实资源，则需要说明这种替换为何适用于正在研究的量，不能将其视为每个带记录过程的自动物理等价。
 
-## 7. Inner code、outer checks 与蒸馏接口
+## 7. 从注入错误到蒸馏检查：究竟由哪一层码检测
 
-### 7.1 先明确线路中的 $X$、$Z$ 属于哪一层
+### 7.1 内码不能检测自己的逻辑 $Z$
 
-前面的每条量子线都可以代表一个已经编码的逻辑量子比特。在这种实现中，$X$、$Z$、CNOT 和 $S$ 都按内码的逻辑操作理解。
+前面的每条量子线都可以代表一个已经编码的逻辑量子比特。这时，线路中的 $X$、$Z$、CNOT、$S$ 和测量，都应理解为相应逻辑操作。
 
-内码把一条线路量子比特编码在一块物理量子比特中。定义内码空间的稳定子检查用于发现物理噪声，使逻辑 Clifford 操作、逻辑测量和相关控制流程足够可靠。把这部分近似为理想，是分析资源噪声时采用的模型，而不是说编码后所有错误都严格消失。
+内码把一个线路量子比特编码在一块物理量子比特中，其稳定子检查用于控制物理噪声，帮助实现可靠的逻辑操作。分析资源错误时把 Clifford 部分近似为理想，是一种噪声模型，不表示编码后所有故障都严格消失。
 
-尤其要区别物理错误与逻辑错误。一个已经成为内码逻辑 $\overline Z$ 的错误保持该内码空间，并与所有内码稳定子对易。因此，**同一个内码的稳定子不能检测它自己的逻辑 $\overline Z$**。
+尤其要区分物理 $Z$ 与内码逻辑 $\overline Z$。逻辑 $\overline Z$ 保持内码空间，并与该内码的全部稳定子对易，因此同一个内码的稳定子不能检测它自己的逻辑 $\overline Z$。
 
-这意味着，若注入线路中传播到数据上的 $Z$ 指的是内码逻辑 $Z$，就不能直接调用内码稳定子来完成上一节要求的反对易检查。
+所以，若注入计算中的输出 $Z$ 已经代表内码逻辑错误，就不能直接调用该内码的稳定子，来充当上一节要求的反对易检查。
 
-### 7.2 外层检查检测内码逻辑量子比特之间的错误
+### 7.2 外层检查比较多个内码块
 
-蒸馏协议在多个内码逻辑量子比特之上再组织一层错误检测结构：每块内码提供一个受保护的线路量子比特，而这些线路量子比特共同承担外层蒸馏码。
+蒸馏协议在多个受保护的线路量子比特之上，再组织一层错误检测结构。每块内码提供一个逻辑量子比特，这些逻辑量子比特共同参与外层蒸馏协议。
 
-例如，外层检查可以包含两块内码的逻辑算符乘积
+例如，跨两块内码的外层检查可以是
 
 $$
 \overline X_1\overline X_2.
 $$
 
-它与第一块上的 $\overline Z_1$ 反对易，因此能够在理想状态具有确定检查值时检测这个错误。这并不违背内码稳定子检测不到 $\overline Z_1$：前者是跨内码块的外层检查，后者是单个内码内部的检查。
+它与第一块上的 $\overline Z_1$ 反对易。如果理想协议状态对这个检查有确定本征值，它就能检测该错误。这里检测的是跨块关系的变化，不是第一块内码自身的稳定子 syndrome。
 
-主来源 §III 开头正是以这种分工组织协议：内码提供受保护的 Clifford 操作，资源注入提供带噪非 Clifford 操作，外层蒸馏码的检查与解码负责筛选相应错误。[^S001]
+Jacinto 等人 Sec. III 开头使用的正是这种分工：内码提供受保护的实现，资源注入提供带噪的非 Clifford 操作，外层蒸馏结构的检查与解码筛选相应错误。[^S001]
 
-在 [[Distillation protocol]] 的 CSS 码空间描述中，$G_0$ 的行指定外层 $X$ 型检查。协议先准备外层编码态，通过多次资源注入实现所需相位层，并施加规定的 Clifford 校正；随后在理想检查值应当确定的位置测量这些检查，只接受满足条件的结果，再解码得到输出资源。
+在 [[Distillation protocol]] §1–§3 的 CSS 码空间描述中，$G_0$ 的行指定外层 $X$ 型检查。协议先准备外层编码态，用多个资源实现规定的 $T/T^\dagger$ 层，并执行协议要求的已知 Clifford 校正；然后在理想检查值应当确定的位置测量这些检查，接受满足条件的记录，再解码得到输出资源。横向层的方向、校正及检查位置，都由具体协议决定。
 
-因此，注入与蒸馏不是同一个动作。注入把一个资源转换为一次门操作，资源错误会随之进入数据；蒸馏则把多次有噪注入组织成带检查和后选择的过程，在相应噪声假设下提高被接受输出的质量。
+因此，注入与蒸馏解决的是不同问题。注入把一个资源消耗为一次门操作，也把资源错误带入数据；蒸馏把多次有噪注入组织成带检查和后选择的过程，在相应输入误差范围与噪声假设下，提高被接受输出的质量。
 
-### 7.3 随机化不自动给出独立输入
+### 7.3 单资源随机化不保证多个资源独立
 
-即使每个资源都已被整理为随机 $Z$ 模型，不同资源之间仍可能有经典关联。要把 $n$ 个输入写成
+即使每个资源都已经有随机 $Z$ 描述，不同资源之间仍可能相关。要进一步写成
 
 $$
 \rho_{\mathrm{in}}=\rho_T(p)^{\otimes n},
 $$
 
-还需要额外假设它们独立且具有相同错误率。
+必须额外假设各输入相互独立，并具有同一个错误率 $p$。
 
-局域 twirling 可以消去不同资源错误模式之间的量子相干，却不会自动把联合概率分解为单体概率的乘积。这个区别见 [[Clifford Twirling 与魔态错误模型]] §9.2。蒸馏分析中的高次错误率抑制，需要根据实际输入模型判断，不能仅由“每个输入都做了 twirling”推出。
+局域 twirling 可以消去不同联合错误模式之间的量子相干，却不会自动把联合概率分解为单体概率的乘积。例如，同一个制备故障可能同时在三个资源上产生 $Z$；这个三资源事件的概率由同一个故障决定，不一定是三个单资源错误率的乘积。相关条件和反例见 [[Clifford Twirling 与魔态错误模型]] §9.2。
 
-实际注入与蒸馏还可能包含内码逻辑故障、测量错误、前馈错误、泄漏及跨资源关联；这些都不由本文假定理想 Clifford 部分的单资源计算覆盖。
+因此，蒸馏中的高次错误率抑制不能仅由“每个资源都做过 twirling”推出。实际分析还可能需要加入内码逻辑故障、测量和前馈错误、泄漏以及跨资源关联；这些不在本文理想 Clifford 部分的单资源计算之内。
 
-## 8. 泛化与术语边界
+## 8. 向多比特门和编码资源延伸时保留哪些区别
 
-本文的一般 $U$ 构造是单比特构造。对角门的相位标签方法可以用于多比特，但不能直接搬用单比特的“两种结果或错误各为 $1/2$”结论。
+### 8.1 $CCZ$：相位标签仍可用，错误却可能是相关字符串
 
-例如，三比特门
+前面的一般 $U$ 构造是单比特构造。对角门的相位标签方法可以用于多比特，但单比特中的“两种记录”或“两个错误分量各为 $1/2$”不能直接照搬。
+
+例如，
 
 $$
 CCZ|x_1x_2x_3\rangle
 =
-(-1)^{x_1x_2x_3}|x_1x_2x_3\rangle
+(-1)^{x_1x_2x_3}|x_1x_2x_3\rangle,
 $$
 
-对应资源 $CCZ|+\rangle^{\otimes3}$。在数据逐位控制资源的 CNOT 注入中，考虑辅助测量全为零的分支：资源第一位上的 $X$ 把资源相位中的 $x_1$ 换成 $x_1\oplus1$，相对于理想门额外产生
+对应资源
 
 $$
+|CCZ\rangle=CCZ|+\rangle^{\otimes3}.
+$$
+
+让数据逐位控制资源的 CNOT，并在计算基测量三个资源量子比特。考虑测量记录全为零、不需额外零分支校正的情况：XOR 约束把各资源标签选为相应数据标签。
+
+若资源第一位在 CNOT 前发生 $X$ 故障，它把资源相位中的 $x_1$ 换成 $x_1\oplus1$。相对于理想 $CCZ$，额外相位为
+
+$$
+\begin{aligned}
 (-1)^{(x_1\oplus1)x_2x_3-x_1x_2x_3}
-=
+&=
+(-1)^{(1-2x_1)x_2x_3}\\
+&=
 (-1)^{x_2x_3}.
+\end{aligned}
 $$
 
-因此残余操作可以是
+因此，该记录下的残余操作是作用于另外两位的
 
 $$
 CZ_{23}
 =
-\frac12\left(I+Z_2+Z_3-Z_2Z_3\right),
+\frac12\left(I+Z_2+Z_3-Z_2Z_3\right).
 $$
 
-其中已经包含相关的 $Z_2Z_3$ 字符串。具体记录、校正和检查如何作用，仍须逐一计算；不能把这个多比特相干组合直接解释成单比特的等概率 $I/Z$ 选择。更一般的资源消费与测量分支结构见 [[MGT 的反向传播与稳定子码构造]]。
+其中已经出现相关的 $Z_2Z_3$ 字符串。这仍是相干的算符展开，不能只看系数就把它解释成几个互斥随机错误；具体记录、前馈和检查能否区分各项，都要另行计算。
 
-最后，“state injection”在文献中有两种需要区分的用法。本文讨论的是
+更一般的资源消费、联合检查和测量分支构造见 [[MGT 的反向传播与稳定子码构造]]。上述例子只说明相位标签方法怎样继续使用，以及为何多比特错误不能压缩成单比特的等概率 $I/Z$ 选择。
 
-$$
-\text{消耗资源态 }|U\rangle
-\quad\longrightarrow\quad
-\text{在数据上实现门 }U.
-$$
+### 8.2 门注入与物理资源的编码注入
 
-另一种用法是把物理层或低编码层的资源态转移到目标逻辑编码空间：
+本文讨论的 state injection 是门注入，也常称 gate teleportation：消耗资源态，通过测量及校正，在未知数据上实现目标门。对于一般 $U$，还必须检查与 $U$ 有关的相互作用和校正能否按所需代价实现。
+
+文献中的“state injection”还可能指另一项任务：把物理层或低编码层的资源态转移到目标逻辑编码空间，例如
 
 $$
 \rho_{T,\mathrm{physical}}
-\quad\longrightarrow\quad
-\rho_{T,L}.
+\longrightarrow
+\rho_{T,L},
 $$
 
-后一种是物理态的编码注入，需要根据具体量子码和测量方案设计。它可以为本文的门注入提供逻辑资源，但不能由这里的两量子比特门恒等式直接代替。
+其中 $L$ 表示目标逻辑编码。
 
-在这些不同语境中，可复用的计算顺序保持一致：先固定基标签和实际线路，用可逆的求和换元选出测量分支，由分支算符计算概率，再判断哪些条件校正可实现、哪些剩余算符是真实错误。错误是否已知、是否已被平均成随机模型，以及是否受到某一层检查的检测，都需要在相应步骤分别说明。
+这种编码注入可以为本文的逻辑门注入提供资源，但它需要具体量子码、状态制备和测量方案，不能由两量子比特的门恒等式直接代替。
 
-[^S001]: H. Jacinto, X. Valcarce, V. Barizien, É. Gouzien, and N. Sangouard, [*Exploring the landscape of compact magic-state distillation factories*](<../../Papers/S001_2026_Jacinto_compact_magic_state_factories.pdf>), arXiv:2606.07734v1 (2026)，Sec. II.B，PDF 第 3–4 页，式 (2)–(3)，以及 Sec. III 开头。本文的测量分支均按所写出的控制方向、资源态和前馈约定计算；式 (3) 与两个有记录分支的对应关系见 §5.3。
+无论在哪一层实现，都应先固定实际线路，再读出测量分支。已知记录决定的校正、未知资源故障留下的错误、忽略记录得到的概率模型，以及实际检查所能区分的错误，是不同阶段的对象。把它们分别落实到所作用的量子线、算符和条件上，才能将单次注入可靠地接入更大的纠错与蒸馏协议。
+
+[^S001]: H. Jacinto, X. Valcarce, V. Barizien, É. Gouzien, and N. Sangouard, [*Exploring the landscape of compact magic-state distillation factories*](<../../Papers/S001_2026_Jacinto_compact_magic_state_factories.pdf>), arXiv:2606.07734v1 (2026)，Sec. II.B，PDF 第 3–4 页，式 (2)–(3)，以及 Sec. III 开头。本文按明确写出的 CNOT 方向、测量标签和前馈计算分支；式 (3) 与两个有记录故障分支的对应关系见 §5.3。
+
+[^S010]: X. Zhou, D. W. Leung, and I. L. Chuang, [*Methodology for quantum logic gate construction*](<../../Papers/S010_2000_Zhou_one_bit_teleportation.pdf>), arXiv:quant-ph/0002039v2 (2000)，Sec. II，PDF 第 2–3 页，尤其式 (7) 的 X-teleportation。这里采用其 one-bit teleportation 的线路与术语定位，不把特定门的低成本构造无条件推广到任意酉门。

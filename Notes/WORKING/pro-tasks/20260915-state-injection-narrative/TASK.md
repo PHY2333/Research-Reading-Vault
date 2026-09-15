@@ -1,7 +1,7 @@
 ---
 task_id: 20260915-state-injection-narrative
 route: pro-write-review
-status: PREPARE
+status: R01_APPLIED
 target_files:
   - Notes/04-Magic State Injection/State injection.md
 integrity: fast
@@ -67,4 +67,4 @@ automation:
 
 # 当前阶段
 
-PREPARE。建立任务分支，准备包含当前笔记、来源登记和请求的 checkpoint。按授权连续执行 R01、应用与推送、独立 R02、最终记录与推送；不合并 main。任务目录保留最小五份记录，成功原始响应与 staging 按 errors-only 清理。
+R01_APPLIED。作者 COMPLETE 完整响应已精确捕获并校验绑定；唯一目标全文原样应用。Codex 完成全文比较、数学/链接检查和数值复核，正文未作语义修改。接下来提交推送并在全新 Pro 会话执行 R02；不合并 main。
