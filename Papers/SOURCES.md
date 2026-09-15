@@ -140,3 +140,18 @@
 - 翻译计划：全文翻译
 - 当前全文译本：[S009 全文译本](../Translations/S009.full.zh-CN.md)
 - 局部摘译：无
+
+### S010
+
+- 类型：paper
+- 题名：*Methodology for quantum logic gate construction*
+- 作者或编者：Xinlan Zhou；Debbie W. Leung；Isaac L. Chuang
+- 年份：2000
+- 外部标识：arXiv:quant-ph/0002039；DOI: 10.1103/PhysRevA.62.052316
+- 本地文件：[S010_2000_Zhou_one_bit_teleportation.pdf](S010_2000_Zhou_one_bit_teleportation.pdf)
+- 版本或版次：arXiv v2（2000-08-01）
+- 阅读状态：已选读
+- 主文献笔记：无
+- 翻译计划：无
+- 当前全文译本：无
+- 局部摘译：无

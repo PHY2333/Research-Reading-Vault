@@ -14,9 +14,9 @@ $$
 
 下面采用 Jacinto 等人 Sec. II.B 的线路约定，但不从图中猜测测量后的答案，而是持续使用同一套计算方法：先跟踪计算基标签，再按将被测量的标签重新组织求和，读出每个测量分支的线性算符，最后确定条件校正。[^S001]
 
-## 1. 用异或把传态读成测量分支
+## 1. One-bit teleportation
 
-### 1.1 CNOT 改变的是基标签
+### 1.1 CNOT 改变基标签
 
 设数据量子比特为 $d$，辅助量子比特为 $a$。全文采用 $d\otimes a$ 的张量积顺序；**哪个因子排在前面，与哪个量子比特充当控制没有必然关系。**
 
@@ -168,13 +168,13 @@ L_m^\dagger L_m
 \frac12I_d,
 $$
 
-所以两个记录的概率都是 $1/2$，归一化条件态为 $X_a^m|\psi\rangle_a$。再对辅助线施加 $X_a^m$，由 $X^{2m}=I$ 恢复 $|\psi\rangle_a$。
+所以两个记录的概率都是 $1/2$，归一化条件态为 $X_a^m|\psi\rangle_a$。根据测量结果 $m$ 再对辅助线施加 $X_a^m$，由 $X^{2m}=I$ 恢复 $|\psi\rangle_a$。
 
 这条线路的输出位于辅助线：**先执行 $\operatorname{CNOT}_{a\to d}$，测量数据线 $d$，再按记录校正辅助线 $a$。** 数据线已经被测量，并没有同时保留下第二份未知输入态。
 
 ## 2. 同一 CNOT 的 $X$ 基描述与一般 $U$
 
-### 2.1 改变控制描述，不等于反转 CNOT
+### 2.1 在数据的 X 基上改变 CNOT 控制描述
 
 后面要构造的门会在数据线的 $X$ 基上受到控制，因此先给这组基一个比特标签：
 
@@ -219,41 +219,7 @@ $$
 }.
 $$
 
-它既可以描述为“在 $a$ 的计算基上控制 $d$ 的 $X$”，也可以描述为“在 $d$ 的 $X$ 基上控制 $a$ 的 $Z$”。后一种描述同时改变了控制基和被控操作，**并没有把门换成 $\operatorname{CNOT}_{d\to a}$，也没有额外执行换基门。**
-
-> [!note]+ 用投影算符代入并合并：两种控制描述如何相等
->
-> 固定张量顺序为 $d\otimes a$。从“辅助线为 $0$ 时不操作，为 $1$ 时对数据线施加 $X$”的定义出发，
->
-> $$
-> \operatorname{CNOT}_{a\to d}
-> =I_d\otimes|0\rangle\langle0|_a
-> +X_d\otimes|1\rangle\langle1|_a.
-> $$
->
-> 定义数据线的 $X$ 本征空间投影算符
->
-> $$
-> P_{\pm,d}:=|\pm\rangle\langle\pm|_d
-> =\frac{I_d\pm X_d}{2}.
-> $$
->
-> 于是 $I_d=P_{+,d}+P_{-,d}$，$X_d=P_{+,d}-P_{-,d}$。**代入并按 $P_{+,d}$、$P_{-,d}$ 合并**：
->
-> $$
-> \begin{aligned}
-> \operatorname{CNOT}_{a\to d}
-> &=(P_{+,d}+P_{-,d})\otimes|0\rangle\langle0|_a
-> +(P_{+,d}-P_{-,d})\otimes|1\rangle\langle1|_a\\
-> &=P_{+,d}\otimes\bigl(|0\rangle\langle0|_a+|1\rangle\langle1|_a\bigr)
-> +P_{-,d}\otimes\bigl(|0\rangle\langle0|_a-|1\rangle\langle1|_a\bigr)\\
-> &=P_{+,d}\otimes I_a+P_{-,d}\otimes Z_a.
-> \end{aligned}
-> $$
->
-> 最后一步把辅助线上的两个括号分别识别为 $I_a$ 和 $Z_a$。因此，同一个门在数据线的 $+$ 本征空间中对辅助线施加 $I_a$，在 $-$ 本征空间中施加 $Z_a$。整个过程只是代入恒等式并合并算符项，张量顺序和门都没有改变。
->
-> 当数据线固定为 $|-\rangle_d$ 时，目标上的 $X$ 本征值 $-1$ 就表现为控制端的 $Z_a$：辅助态中 $|1\rangle_a$ 分量相对 $|0\rangle_a$ 分量多一个负号。这就是这里的相位回踢，控制方向仍为 $a\to d$。
+它既可以描述为“在 $a$ 的计算基上控制 $d$ 的 $X$”，也可以描述为“在 $d$ 的 $X$ 基上控制 $a$ 的 $Z$”。后一种描述同时改变了控制基和被控操作，当数据线固定为 $|-\rangle_d$ 时，目标上的 $X$ 本征值 $-1$ 就表现为控制端的 $Z_a$：辅助态中 $|1\rangle_a$ 分量相对 $|0\rangle_a$ 分量多一个负号。这就是这里的**相位回踢**，控制方向仍为 $a\to d$。
 
 ### 2.2 通过共轭把目标门接入传态
 
@@ -350,17 +316,17 @@ $$
 \operatorname{CNOT}_{d\to a}
 \bigl(|s_X\rangle_d|\eta\rangle_a\bigr)
 &=
+{}_{a}\langle m| \frac{1}{\sqrt{ 2 }}\sum_{x,y}(-1)^{sx}\eta_{y}|x\rangle_{d}|y\oplus x\rangle_{a} \\
+&=
 \frac1{\sqrt2}
 \sum_x(-1)^{sx}\eta_{x\oplus m}|x\rangle_d\\
 &=
 \frac1{\sqrt2}
-Z_d^sX_d^m|\eta\rangle_d.
+Z_d^sX_d^m|\eta\rangle_d. \\
 \end{aligned}
 $$
 
 最后一行仍使用前面的跨线态标签约定：$|\eta\rangle_d$ 表示把系数 $\eta_y$ 放在数据空间的计算基上。这里没有额外的交换操作。
-
-这条规则把两件事分开了：测量标签决定辅助振幅应取 $\eta_{x\oplus m}$，而数据的 $X$ 基标签贡献相位 $(-1)^{sx}$。
 
 ### 3.2 从两个输入分支的失配引入受控门
 
