@@ -221,23 +221,39 @@ $$
 
 它既可以描述为“在 $a$ 的计算基上控制 $d$ 的 $X$”，也可以描述为“在 $d$ 的 $X$ 基上控制 $a$ 的 $Z$”。后一种描述同时改变了控制基和被控操作，**并没有把门换成 $\operatorname{CNOT}_{d\to a}$，也没有额外执行换基门。**
 
-> [!note]- 相位回踢：目标的本征值成为控制端的相对相位
+> [!note]+ 用投影算符代入并合并：两种控制描述如何相等
 >
-> 上面的 $(-1)^{sy}$ 就是相位回踢的来源。数据线处于固定的 $X$ 本征态 $|s_X\rangle_d$ 时，受控施加 $X_d^y$ 只会带来本征值因子 $(-1)^{sy}$。若辅助线叠加了 $y=0$ 与 $y=1$ 两个分量，这个因子就成为它们之间的相对相位。对任意辅助态 $|\chi\rangle_a$，由线性性得到
->
-> $$
-> \operatorname{CNOT}_{a\to d}|s_X\rangle_d|\chi\rangle_a
-> =|s_X\rangle_d Z_a^s|\chi\rangle_a.
-> $$
->
-> 例如 $s=1$、$|\chi\rangle_a=|+\rangle_a$ 时，
+> 固定张量顺序为 $d\otimes a$。从“辅助线为 $0$ 时不操作，为 $1$ 时对数据线施加 $X$”的定义出发，
 >
 > $$
-> \operatorname{CNOT}_{a\to d}|-\rangle_d|+\rangle_a
-> =|-\rangle_d|-\rangle_a.
+> \operatorname{CNOT}_{a\to d}
+> =I_d\otimes|0\rangle\langle0|_a
+> +X_d\otimes|1\rangle\langle1|_a.
 > $$
 >
-> 数据线仍处于同一个本征态，辅助线的两个计算基分量却多了一个相对负号。**“回踢”指本征值相位体现在控制端，门的控制方向仍是 $a\to d$。** 若辅助线只有一个计算基分量，该因子只是整体相位；若数据线本身叠加了不同的 $X$ 本征态，则应分别按上述关系作用，输出可能纠缠，不能一概说数据态保持不变。
+> 定义数据线的 $X$ 本征空间投影算符
+>
+> $$
+> P_{\pm,d}:=|\pm\rangle\langle\pm|_d
+> =\frac{I_d\pm X_d}{2}.
+> $$
+>
+> 于是 $I_d=P_{+,d}+P_{-,d}$，$X_d=P_{+,d}-P_{-,d}$。**代入并按 $P_{+,d}$、$P_{-,d}$ 合并**：
+>
+> $$
+> \begin{aligned}
+> \operatorname{CNOT}_{a\to d}
+> &=(P_{+,d}+P_{-,d})\otimes|0\rangle\langle0|_a
+> +(P_{+,d}-P_{-,d})\otimes|1\rangle\langle1|_a\\
+> &=P_{+,d}\otimes\bigl(|0\rangle\langle0|_a+|1\rangle\langle1|_a\bigr)
+> +P_{-,d}\otimes\bigl(|0\rangle\langle0|_a-|1\rangle\langle1|_a\bigr)\\
+> &=P_{+,d}\otimes I_a+P_{-,d}\otimes Z_a.
+> \end{aligned}
+> $$
+>
+> 最后一步把辅助线上的两个括号分别识别为 $I_a$ 和 $Z_a$。因此，同一个门在数据线的 $+$ 本征空间中对辅助线施加 $I_a$，在 $-$ 本征空间中施加 $Z_a$。整个过程只是代入恒等式并合并算符项，张量顺序和门都没有改变。
+>
+> 当数据线固定为 $|-\rangle_d$ 时，目标上的 $X$ 本征值 $-1$ 就表现为控制端的 $Z_a$：辅助态中 $|1\rangle_a$ 分量相对 $|0\rangle_a$ 分量多一个负号。这就是这里的相位回踢，控制方向仍为 $a\to d$。
 
 ### 2.2 通过共轭把目标门接入传态
 
