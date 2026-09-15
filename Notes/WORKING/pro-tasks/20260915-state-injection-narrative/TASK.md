@@ -1,7 +1,7 @@
 ---
 task_id: 20260915-state-injection-narrative
 route: pro-write-review
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/04-Magic State Injection/State injection.md
 integrity: fast
@@ -67,4 +67,4 @@ automation:
 
 # 当前阶段
 
-R01_APPLIED。作者 COMPLETE 完整响应已精确捕获并校验绑定；唯一目标全文原样应用。Codex 完成全文比较、数学/链接检查和数值复核，正文未作语义修改。接下来提交推送并在全新 Pro 会话执行 R02；不合并 main。
+DONE。真实 6 Pro 作者全文重组已在 4cdbff321a2dfdab7f864ba03f42ee14a498403d 应用推送；全新真实 6 Pro 独立审查返回 REVIEW_PASS，绑定该固定提交。最终 Obsidian 数学检查通过，正文与作者应用版本逐字节一致。保留任务目录和 Git 审计，成功临时产物清理；不合并 main。
