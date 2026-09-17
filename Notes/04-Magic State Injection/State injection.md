@@ -919,69 +919,58 @@ $$
 
 相干受控门完全消失，剩下第二节那种 CNOT、辅助线测量和数据线校正。
 
-但对角性本身不保证校正是 Clifford。为判断这一点，记 Clifford 群为 $\mathcal C_2$；Clifford 层级的第三层 $\mathcal C_3$ 由满足以下性质的酉门组成：它通过共轭把每个 Pauli 算符映为 Clifford 门。
-
-若 $U\in\mathcal C_3$，则
+接下来判断测后校正是否为 Clifford。对角门可以用相位函数表示：
 
 $$
-UXU^\dagger\in\mathcal C_2.
-$$
-
-Clifford 门对乘法封闭，$X$ 也属于 Clifford，因此
-
-$$
-C_U=(UXU^\dagger)X\in\mathcal C_2.
-$$
-
-所以，对这里的**单比特对角第三层门**，只需资源 $|U\rangle$、Clifford 操作、计算基测量和经典前馈。两个条件的作用不同：对角性消去相干受控门，第三层条件保证剩下的校正是 Clifford。
-
-第三层条件在这里是保证校正代价的充分条件；不能仅凭某一个校正恰好是 Clifford，就反推一般 $U$ 必在第三层。对于非对角 $U$，即使 $R_U$ 本身是 Clifford，也仍不能自动把 $\Lambda_X(R_U)$ 当作 Clifford。
-
-用 $T$ 核对一般公式。对计算基矢，
-
-$$
-\begin{aligned}
-C_T|x\rangle
-&=
-TXT^\dagger X|x\rangle\\
-&=
-\omega^{x-(x\oplus1)}|x\rangle\\
-&=
-\omega^{2x-1}|x\rangle
-=
-\omega^{-1}i^x|x\rangle.
-\end{aligned}
-$$
-
-因此
-
-$$
-\boxed{C_T=\omega^{-1}S}.
-$$
-
-这与第二节使用的 $S$ 只差测量分支的整体相位。又因为
-
-$$
-TXT^\dagger=\omega^{-1}SX,
+U=D_f,
 \qquad
-TZT^\dagger=Z,
+D_f|x\rangle=e^{2\pi i f(x)}|x\rangle,
+\qquad
+f:\{0,1\}\to\mathbb R.
 $$
 
-两个 Pauli 生成元的共轭像都是 Clifford，所以 $T\in\mathcal C_3$。其中 $TXT^\dagger=(X+Y)/\sqrt2$ 不是 Pauli，故 $T$ 本身不是 Clifford。
-
-作为对比，取
+沿用 [[对角相位门的Clifford层级#3. 共轭一个翻转，会出现相位差分|对角相位门的 Clifford 层级 §3]] 的约定，定义沿比特翻转的有限差分
 
 $$
-\sqrt T=\operatorname{diag}(1,e^{i\pi/8}).
+\Delta f(x)=f(x)-f(x\oplus1).
 $$
 
-同样的相位标签计算给出
+该节式 (5) 已证明 $D_fXD_f^\dagger X=D_{\Delta f}$，恰好就是本线路需要的校正算符：
 
 $$
-C_{\sqrt T}=e^{-i\pi/8}T.
+\boxed{
+C_U=UXU^\dagger X=D_{\Delta f}
+}.
 $$
 
-它仍然是对角门，故受控 $R_{\sqrt T}$ 消失；但测后校正仍包含非 Clifford 门 $T$，不能当作与 $T$ 注入同样的 Clifford-only 消费线路。
+因此，**对角门注入的测后校正，对应于原相位函数的一次有限差分。** 这里用这个结论识别校正门，其层级由该笔记中的差分判据判断。
+
+记 Clifford 群为 $\mathcal C_2$；第三层 $\mathcal C_3$ 是将每个 Pauli 共轭为 Clifford 门的酉门集合。该笔记 §3 式 (7) 给出：对角门属于 $\mathcal C_3$，当且仅当所有翻转方向的差分门都属于 $\mathcal C_2$。对于当前的单比特，只有不翻转与翻转一次两种方向；前者的差分为零，对应恒等门，后者就是 $C_U$。所以
+
+$$
+\boxed{
+U\in\mathcal C_3
+\quad\Longleftrightarrow\quad
+C_U\in\mathcal C_2
+}
+\qquad
+\text{（单比特对角 }U\text{）}.
+$$
+
+在这套原位线路中，对角性使测量前的受控门消失，第三层条件则恰好保证测后的校正是 Clifford。因此，单比特对角 $U\in\mathcal C_3$ 的资源准备好后，剩余操作只需 Clifford 门、计算基测量和经典前馈。
+
+以 $T=\operatorname{diag}(1,e^{i\pi/4})$ 和 $\sqrt T=\operatorname{diag}(1,e^{i\pi/8})$ 为例，直接对相位函数作差分：
+
+| 目标门 | 相位函数 $f(x)$ | 差分 $\Delta f(x)$ | 校正门 $C_U=D_{\Delta f}$ |
+|---|---|---|---|
+| $T$ | $x/8$ | $x/4-1/8$ | $e^{-i\pi/4}S$ |
+| $\sqrt T$ | $x/16$ | $x/8-1/16$ | $e^{-i\pi/8}T$ |
+
+表中的 $x/4$、$x/8$ 分别给出 $S$、$T$，常数项则给出所写出的整体相位。校正是在测量后按经典记录执行的，这些整体相位不影响相应条件态。
+
+按 [[对角相位门的Clifford层级#5. 下界：构造一串不会过早成为全局相位的差分|对角相位门的 Clifford 层级 §5]] 的最低层数结论，对 $f(x)=x/2^q$（$q\ge1$ 为整数），支持大小为 $1$，最低层数为 $q+1-1=q$。因此 $S$、$T$、$\sqrt T$ 的最低层数分别为 $2$、$3$、$4$。$T$ 的校正是 Clifford 门 $S$，与第二节一致；$\sqrt T$ 的校正仍含非 Clifford 门 $T$，所以这套线路消费 $\sqrt T$ 资源时仍需非 Clifford 前馈。
+
+以上等价判据限定在单比特对角门。对于一般非对角 $U$，单独知道 $C_U$ 是 Clifford，不足以判定所有 Pauli 的共轭像；还须检查测量前的相干受控门。即使 $R_U$ 本身是 Clifford，也不能自动把 $\Lambda_X(R_U)$ 当作 Clifford。
 
 ### 4.5 为什么理想线路没有唯一确定受控门的全部作用
 
