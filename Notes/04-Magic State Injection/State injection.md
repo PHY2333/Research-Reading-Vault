@@ -555,82 +555,94 @@ $$
 
 因此，任意 $U$ 都满足上述线路恒等式，但不能由此断言任意 $U$ 都能只靠一个 $U|+\rangle$ 资源和 Clifford 操作实现。资源制备、相干相互作用和测后校正的代价，需要分别检查。
 
-## 4. 一般 $U$ 的原位构造：从已有线路缺少什么开始
+## 4. 一般 $U$ 的原位构造
 
-现在重新要求输出位于数据线 $d$。这不是对上一节的 $W_U$ 再换一种写法，而是构造另一条实际线路：测量辅助线，并保留数据线。
+现在重新要求输出位于数据线 $d$，构造另一条实际线路：测量辅助线，并保留数据线。
 
 第二节已经给出一个成功的特例：资源为 $|T\rangle$ 时，使用 $\operatorname{CNOT}_{d\to a}$ 和辅助线测量即可。下面把资源换成 $|U\rangle$，先检查这条简单候选线路哪里正确、哪里不正确，再决定要补什么门。
 
-### 4.1 用两个 $X$ 基输入检查候选线路
+### 4.1 先算候选线路在零测量记录下留下什么
 
-资源直接给出了 $U|+\rangle$。因此，检查候选线路时，可以先问它对数据输入 $|+\rangle$ 是否已经正确，再问它能否同时正确处理正交方向 $|-\rangle$。这就是此处选择 $X$ 基作为测试输入的理由。
-
-为了统一计算，给这两个基态一个比特标签：
+先用计算基写出候选线路的输出。设数据态和辅助态分别为
 
 $$
-|s_X\rangle
-:=
-Z^s|+\rangle
-=
-\frac1{\sqrt2}
-\sum_x(-1)^{sx}|x\rangle,
+|\psi\rangle_d=\sum_xc_x|x\rangle_d,
 \qquad
-s\in\{0,1\}.
+|\eta\rangle_a=\sum_y\eta_y|y\rangle_a,
 $$
 
-其中 $s=0$ 表示 $|+\rangle$，$s=1$ 表示 $|-\rangle$，并且
-
-$$
-X|s_X\rangle=(-1)^s|s_X\rangle.
-$$
-
-**$s$ 是输入的相干基标签；$m$ 才是辅助线计算基测量的记录。** 数据可以是两个 $s$ 分量的叠加，我们没有测量 $s$。
-
-先让辅助态为任意归一化向量
-
-$$
-|\eta\rangle_a=\sum_y\eta_y|y\rangle_a.
-$$
-
-这样，同一条计算规则既能用于原资源，也能用于稍后可能修改的资源。执行 CNOT 后，测量前的联合态为
+二者均已归一化。暂时保留任意辅助态 $|\eta\rangle$，这样得到的规则也能用于稍后经过补偿的资源。沿用第二节的 XOR 换元，测量前的联合态为
 
 $$
 \begin{aligned}
 \operatorname{CNOT}_{d\to a}
-|s_X\rangle_d|\eta\rangle_a
+|\psi\rangle_d|\eta\rangle_a
 &=
-\frac1{\sqrt2}
-\sum_{x,y}(-1)^{sx}\eta_y
+\sum_{x,y}c_x\eta_y
 |x\rangle_d|y\oplus x\rangle_a\\
 &=
-\frac1{\sqrt2}
-\sum_{m,x}(-1)^{sx}\eta_{x\oplus m}
+\sum_{m,x}c_x\eta_{x\oplus m}
 |x\rangle_d|m\rangle_a.
 \end{aligned}
 $$
 
-第二行复用了 $y=x\oplus m$ 的换元。取辅助线测量分支，得到
+这里 $m=y\oplus x$，所以 $y=x\oplus m$。测得辅助线为 $m$ 后，数据线留下的未归一化向量为
 
 $$
-\begin{aligned}
 {}_a\langle m|
 \operatorname{CNOT}_{d\to a}
-|s_X\rangle_d|\eta\rangle_a
-&=
-\frac1{\sqrt2}
-\sum_x(-1)^{sx}\eta_{x\oplus m}|x\rangle_d\\
-&=
+|\psi\rangle_d|\eta\rangle_a
+=
 \boxed{
-\frac1{\sqrt2}Z_d^sX_d^m|\eta\rangle_d
+\sum_xc_x\eta_{x\oplus m}|x\rangle_d
 }.
-\end{aligned}
 $$
 
-最后一行中，$|\eta\rangle_d$ 表示把同样的系数写到数据空间。$X^m$ 负责标签翻转，$Z^s$ 负责数据 $X$ 基输入带来的符号。
+先看 $m=0$。测量选中 $y=x$，输出变为
+
+$$
+\sum_xc_x\eta_x|x\rangle_d.
+$$
+
+数据的振幅 $c_x$ 逐项乘在辅助态的振幅 $\eta_x$ 上。若取 $c_0=c_1=1/\sqrt2$，即数据输入为 $|+\rangle$，两个辅助振幅就都只乘上同一个因子。因此
+
+$$
+{}_a\langle0|
+\operatorname{CNOT}_{d\to a}
+|+\rangle_d|\eta\rangle_a
+=
+\frac1{\sqrt2}\sum_x\eta_x|x\rangle_d
+=
+\frac1{\sqrt2}|\eta\rangle_d.
+$$
+
+其中 $|\eta\rangle_d$ 表示把辅助态的同一组系数写到数据空间。现在代入实际资源 $|\eta\rangle=|U\rangle=U|+\rangle$，就得到
+
+$$
+{}_a\langle0|
+\operatorname{CNOT}_{d\to a}
+|+\rangle_d|U\rangle_a
+=
+\frac1{\sqrt2}U|+\rangle_d.
+$$
+
+这说明候选线路在零测量分支下，已经把数据输入 $|+\rangle$ 变成了目标输出。接下来检查正交方向 $|-\rangle$：它与 $|+\rangle$ 构成一组基，能够用来判断线路是否对任意输入都正确。选择这两个 $X$ 基态，是因为前面的计算已经找到了其中一个正确的输入方向。
 
 ### 4.2 固定零测量记录后，只需补偿哪个输入方向
 
-先固定 $m=0$，并令 $|\eta\rangle=|U\rangle=U|+\rangle$。暂时省略共同的因子 $1/\sqrt2$，比较候选线路与目标：
+仍固定 $m=0$。数据输入换成 $|-\rangle$ 时，$c_x=(-1)^x/\sqrt2$；代入上一节的零分支公式，对任意辅助态都有
+
+$$
+{}_a\langle0|
+\operatorname{CNOT}_{d\to a}
+|-\rangle_d|\eta\rangle_a
+=
+\frac1{\sqrt2}\sum_x(-1)^x\eta_x|x\rangle_d
+=
+\frac1{\sqrt2}Z_d|\eta\rangle_d.
+$$
+
+取 $|\eta\rangle=|U\rangle=U|+\rangle$，暂时省略共同的因子 $1/\sqrt2$，就能比较候选线路与目标：
 
 | 数据输入 | 候选线路的零分支输出 | 目标门的输出 |
 |---|---|---|
@@ -692,6 +704,42 @@ $$
 于是，待核验的完整顺序为：先执行 $\Lambda_X(R_U)$，再执行 $\operatorname{CNOT}_{d\to a}$，随后测量辅助线，最后按记录校正数据线。
 
 ### 4.3 另一测量记录留下什么，以及怎样校正
+
+零测量记录下，两个基输入已经按同一分支振幅得到目标输出。现在还需检查 $m=1$，并找出测量后的校正。为了统一处理两个输入方向，定义
+
+$$
+|s_X\rangle
+:=
+Z^s|+\rangle
+=
+\frac1{\sqrt2}
+\sum_x(-1)^{sx}|x\rangle,
+\qquad
+s\in\{0,1\}.
+$$
+
+$s=0$ 表示 $|+\rangle$，$s=1$ 表示 $|-\rangle$，并且
+
+$$
+X|s_X\rangle=(-1)^s|s_X\rangle.
+$$
+
+这里 $s$ 标记输入的相干基分量，$m$ 仍表示辅助线的测量记录。将 $c_x=(-1)^{sx}/\sqrt2$ 代入 §4.1 已得到的一般测量分支，便有
+
+$$
+\begin{aligned}
+{}_a\langle m|
+\operatorname{CNOT}_{d\to a}
+|s_X\rangle_d|\eta\rangle_a
+&=
+\frac1{\sqrt2}
+\sum_x(-1)^{sx}\eta_{x\oplus m}|x\rangle_d\\
+&=
+\frac1{\sqrt2}Z_d^sX_d^m|\eta\rangle_d.
+\end{aligned}
+$$
+
+$X^m$ 翻转辅助态的系数标签，$Z^s$ 补上输入基态带来的符号。下面把这条规则用于经过受控 $R_U$ 处理的资源。
 
 令这条原位线路的分支算符为 $K_m$：
 
