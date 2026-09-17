@@ -1046,49 +1046,106 @@ $$
 
 线路实际上在读取数据的计算基信息，而不是以两个等概率酉分支实现目标门。
 
-下面分别讨论资源上的 Pauli $Z$ 和 $X$ 故障。将资源换成 $P|T\rangle$ 后的分支记为 $K_m^{(P)}$。
+下面分别讨论资源上的 Pauli $Z$ 和 $X$ 故障。将资源换成 $P|T\rangle$ 后的分支记为 $K_m^{(P)}$。这里的分支算符都给出测量后、执行 $S^m$ 校正前的未归一化输出。
 
-对于 $\operatorname{CNOT}_{d\to a}$，目标端的 Pauli 传播关系为
+简记 $C:=\operatorname{CNOT}_{d\to a}$。对任意输入 $|\psi\rangle$，理想分支与故障分支分别定义为
 
 $$
-\operatorname{CNOT}_{d\to a}(I_d\otimes Z_a)
+\begin{aligned}
+K_m|\psi\rangle
+&=
+{}_a\langle m|C
+\bigl(|\psi\rangle_d|T\rangle_a\bigr),\\
+K_m^{(P)}|\psi\rangle
+&=
+{}_a\langle m|C(I_d\otimes P_a)
+\bigl(|\psi\rangle_d|T\rangle_a\bigr).
+\end{aligned}
+$$
+
+这里测量投影只在辅助空间取内积，保留数据线上的输出。
+
+**对于资源上的 $Z$ 故障**，先用 CNOT 的传播关系
+
+$$
+C(I_d\otimes Z_a)
 =
-(Z_d\otimes Z_a)\operatorname{CNOT}_{d\to a},
+(Z_d\otimes Z_a)C.
 $$
 
+这说明故障经过 CNOT 后，数据端和辅助端各留下一个 $Z$。辅助端的 $Z$ 随后作用于测量投影，满足
+
 $$
-\operatorname{CNOT}_{d\to a}(I_d\otimes X_a)
+\langle m|Z=(-1)^m\langle m|.
+$$
+
+将这两条关系依次代入分支定义：
+
+$$
+\begin{aligned}
+K_m^{(Z)}|\psi\rangle
+&=
+{}_a\langle m|C(I_d\otimes Z_a)
+\bigl(|\psi\rangle_d|T\rangle_a\bigr)\\
+&=
+{}_a\langle m|(Z_d\otimes Z_a)C
+\bigl(|\psi\rangle_d|T\rangle_a\bigr)\\
+&=
+Z_d\bigl({}_a\langle m|Z_a\bigr)C
+\bigl(|\psi\rangle_d|T\rangle_a\bigr)\\
+&=
+(-1)^mZ_dK_m|\psi\rangle.
+\end{aligned}
+$$
+
+第三行把作用在数据线上的 $Z_d$ 提到辅助线投影之外；第四行把辅助端的 $Z_a$ 化为符号 $(-1)^m$。由于等式对任意输入成立，得到
+
+$$
+\boxed{K_m^{(Z)}=(-1)^mZK_m},
+$$
+
+其中右侧的 $Z$ 作用于剩下的数据线。
+
+**对于资源上的 $X$ 故障**，传播关系是
+
+$$
+C(I_d\otimes X_a)
 =
-(I_d\otimes X_a)\operatorname{CNOT}_{d\to a}.
+(I_d\otimes X_a)C.
 $$
 
-第一条也可从标签直接理解：输入资源的符号 $(-1)^y$，在输出标签为 $x$ 与 $x\oplus y$ 时写成
+故障仍只作用在辅助端。由于 $X$ 翻转计算基标签，
 
 $$
-(-1)^y=(-1)^x(-1)^{x\oplus y}.
+\langle m|X=\langle m\oplus1|.
 $$
 
-第二条则因为在目标标签上先翻转一次，或在 XOR 后再翻转一次，结果相同。
-
-随后取辅助线测量分支，并使用
+例如 $\langle0|X=\langle1|$。因此
 
 $$
-\langle m|Z=(-1)^m\langle m|,
-\qquad
-\langle m|X=\langle m\oplus1|,
+\begin{aligned}
+K_m^{(X)}|\psi\rangle
+&=
+{}_a\langle m|C(I_d\otimes X_a)
+\bigl(|\psi\rangle_d|T\rangle_a\bigr)\\
+&=
+\bigl({}_a\langle m|X_a\bigr)C
+\bigl(|\psi\rangle_d|T\rangle_a\bigr)\\
+&=
+{}_a\langle m\oplus1|C
+\bigl(|\psi\rangle_d|T\rangle_a\bigr)\\
+&=
+K_{m\oplus1}|\psi\rangle.
+\end{aligned}
 $$
 
-得到
+所以
 
 $$
-\boxed{
-K_m^{(Z)}=(-1)^mZK_m
-},
-\qquad
-\boxed{
-K_m^{(X)}=K_{m\oplus1}
-}.
+\boxed{K_m^{(X)}=K_{m\oplus1}}.
 $$
+
+这里“交换分支”是在比较有故障与理想的两条线路：带 $X$ 故障的线路读到 $m$ 时，留下的是理想线路中编号 $m\oplus1$ 的输出。实验实际读到的记录仍是 $m$。
 
 由理想分支的 $K_m^\dagger K_m=I/2$ 可知，这两类故障下也分别有
 
