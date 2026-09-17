@@ -754,39 +754,88 @@ $$
 
 输入和输出现在都属于数据空间，不需要跨线映射 $J$。
 
-对 $s=0,1$，资源约束统一写成
+先看受控门怎样作用在基输入上。$s=0$ 时辅助端执行 $I$，$s=1$ 时执行 $R_U$，所以
+
+$$
+\Lambda_X(R_U)
+\bigl(|s_X\rangle_d|U\rangle_a\bigr)
+=
+|s_X\rangle_d\bigl(R_U^s|U\rangle_a\bigr).
+$$
+
+此时数据基态仍是 $|s_X\rangle$，进入 CNOT 的辅助态变为 $R_U^s|U\rangle$。对 $s=0$，这个辅助态是 $U|+\rangle$；对 $s=1$，上一节的资源约束给出 $R_U|U\rangle=ZU|-\rangle$。二者统一写成
 
 $$
 R_U^s|U\rangle=Z^sU|s_X\rangle.
 $$
 
-这里的指数只是在 $I$ 与 $R_U$ 之间选择，不要求 $R_U^2=I$。把它代入辅助线测量规则：
+这里的指数只是在 $I$ 与 $R_U$ 之间选择，不要求 $R_U^2=I$。在前面的辅助线测量规则中，代入 $|\eta\rangle=R_U^s|U\rangle$，便得到第一步：
 
 $$
 \begin{aligned}
 K_m|s_X\rangle
 &=
-\frac1{\sqrt2}Z^sX^mZ^sU|s_X\rangle\\
+\frac1{\sqrt2}Z^sX^m\bigl(R_U^s|U\rangle\bigr)\\
+&=
+\frac1{\sqrt2}Z^sX^mZ^sU|s_X\rangle.
+\end{aligned}
+$$
+
+此处辅助态的系数已按测量规则写到数据空间，右边所有算符都作用于剩下的数据态。
+
+接下来化简相邻的三个 Pauli 因子。由 $ZX=-XZ$，且 $s,m\in\{0,1\}$，
+
+$$
+Z^sX^m=(-1)^{sm}X^mZ^s.
+$$
+
+只有 $s=m=1$ 时需要交换一次 $Z$ 与 $X$，产生负号；其余情况至少有一个因子是 $I$。再在右侧乘上 $Z^s$，利用 $Z^{2s}=I$，得到
+
+$$
+\begin{aligned}
+Z^sX^mZ^s
+&=
+(-1)^{sm}X^mZ^sZ^s\\
+&=
+(-1)^{sm}X^mZ^{2s}\\
+&=
+(-1)^{sm}X^m.
+\end{aligned}
+$$
+
+因此
+
+$$
+K_m|s_X\rangle
+=
+\frac{(-1)^{sm}}{\sqrt2}X^mU|s_X\rangle.
+$$
+
+最后处理标量符号 $(-1)^{sm}$。由于 $|s_X\rangle$ 是 $X$ 的本征态，
+
+$$
+X|s_X\rangle=(-1)^s|s_X\rangle,
+\qquad
+X^m|s_X\rangle=(-1)^{sm}|s_X\rangle.
+$$
+
+利用 $X^mU$ 的线性性，可以先把标量乘到输入态上，再用这个本征态等式替换：
+
+$$
+\begin{aligned}
+K_m|s_X\rangle
 &=
 \frac{(-1)^{sm}}{\sqrt2}X^mU|s_X\rangle\\
+&=
+\frac1{\sqrt2}X^mU\bigl((-1)^{sm}|s_X\rangle\bigr)\\
+&=
+\frac1{\sqrt2}X^mU\bigl(X^m|s_X\rangle\bigr)\\
 &=
 \frac1{\sqrt2}X^mUX^m|s_X\rangle.
 \end{aligned}
 $$
 
-第二步用了
-
-$$
-Z^sX^mZ^s=(-1)^{sm}X^m,
-$$
-
-第三步用了
-
-$$
-X^m|s_X\rangle=(-1)^{sm}|s_X\rangle.
-$$
-
-没有把 Pauli 算符无条件穿过一般的 $U$。由于等式对一组基成立，由线性性得到
+最右侧的 $X^m$ 来自它对输入基态的本征值作用；这一步只移动了标量符号，并未交换 $U$ 与 $X^m$。由于等式对 $|+\rangle$、$|-\rangle$ 这一组基都成立，由线性性得到
 
 $$
 \boxed{
