@@ -655,7 +655,7 @@ z
 (−1)tr(xyz) |x⟩|y⟩|z⟩.(15)
 ApplyH ⊗s again on thez-register:
 H ⊗s
- 
+
 1√
 2s
 X
@@ -667,7 +667,7 @@ z
 X
 z
 (−1)tr(xyz)
- 
+
 1√
 2s
 X
@@ -1340,4 +1340,3 @@ $$
 [^11]: 这一步也可以通过消耗一个 $|\mathrm{CCZ}\rangle$ 态并使用 Clifford 操作来执行。
 
 [^12]: 事实上，三个 qudit 中任取一个都可以。
-

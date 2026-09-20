@@ -51,4 +51,8 @@ R01 完整稿已从 staging 应用到原路径。其教学与数学成文全部�
 - git_diff_check: PASS
 - unchanged_scope_verified: true（最终 SHA-256 再核验一致）
 - current_stage: DONE
-- next_action: 本报告与 FINAL_REPORT 提交推送，清理本任务成功临时材料；主分支整合等待用户决定。
+- next_action: 本报告与 FINAL_REPORT 提交推送，清理本任务成功临时材料；主分支整合已由用户后续授权完成。
+
+## 后续主分支整合
+
+2026-09-21 用户授权“合并到main”。已无冲突快进合并交付提交 97660c93edf8224a7ded8a465e7ead3f7eba4454 至 main，并成功推送远端。合并阶段仅补充执行报告与清理来源摘录三处空白格式，正式正文保持。

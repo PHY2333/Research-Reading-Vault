@@ -17,9 +17,9 @@ Framework: Notes Pro-First 1.2
 - Codex_format_repair_summary: 7 个商记号斜线增加薄空格；捕获外层围栏及边界空行规范化；正文无语义改动
 - final_Obsidian_math_check: PASS（1 个正式 Markdown）
 - git_diff_check: PASS
-- push_result: R01 正文与 R02 请求已成功推送任务分支；R02 无新正文修订，本交付报告随最终回执提交同步
+- push_result: 任务分支交付已推送；用户后续授权的 main 快进整合已成功推送，正文沿用 R02 审查通过版本
 - unresolved_items: 无
-- merge_to_main: not performed
+- merge_to_main: completed；用户于 2026-09-21 授权，已快进到 97660c93edf8224a7ded8a465e7ead3f7eba4454 并推送 main/main
 
 ## 内容与范围
 
@@ -54,9 +54,18 @@ Framework: Notes Pro-First 1.2
 ### 流程回执
 
 - task_id：20260920-binary-field-introduction
-- 当前阶段：DONE（任务分支交付）
-- 已完成：真实 Pro 整篇重写、独立 Pro 审查通过、格式/链接/范围核验、应用与任务分支提交推送。
-- 阻塞或待确认：无内容阻塞；主分支整合未执行。
-- 下一位执行者：用户决定是否整合，Codex 按决定执行。
-- 下一步唯一动作：决定是否合并 main。
-- 用户可直接回复：合并 main。
+- 当前阶段：DONE（已合并并推送 main）
+- 已完成：真实 Pro 整篇重写、独立 Pro 审查通过、格式/链接/范围核验、应用与任务分支提交推送；按用户后续授权合并并推送 main。
+- 阻塞或待确认：无。
+- 下一位执行者：无，任务完成。
+- 下一步唯一动作：无。
+- 用户可直接回复：无需回复；后续可反馈阅读体验。
+
+## 主分支整合回执
+
+- 授权：用户于 2026-09-21 明确回复“合并到main”。
+- 整合方式：fast-forward，无冲突；main 从 069e43b77b5a9683b19b2855522864490ce52f83 到 97660c93edf8224a7ded8a465e7ead3f7eba4454。
+- 推送：远端 main/main 已接收上述整合提交。
+- 合并附带机械处理：SOURCE_EXCERPTS.md 两处行尾空格与末尾多余空行清理；不涉及正式正文或数学内容。
+- 用户已有材料：Papers/SOURCES.md 与三份未跟踪 PDF 保持；未纳入提交。
+- 审计：任务材料和 FAILURES 保留；成功临时材料已清理。
