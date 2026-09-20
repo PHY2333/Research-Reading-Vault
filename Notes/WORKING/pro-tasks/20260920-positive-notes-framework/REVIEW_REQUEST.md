@@ -3,7 +3,7 @@ task_id: 20260920-positive-notes-framework
 request_id: R02
 request_type: whole-file-review
 review_mode: independent
-binding_id: bf9010e5447cc5c8188a171f177f8591
+binding_id: 56e38165cbcc749c332e68299f1ddfc7
 target_files:
   - AGENTS.md
   - Notes/AGENTS.md
@@ -35,3 +35,9 @@ target_files:
 # 输出
 
 实质内容通过时按协议返回 REVIEW_PASS。需要修订时返回 COMPLETE 和全部受影响文件的完整修正版。纯格式问题交由 Codex 上下文修复。读取缺项时按协议准确指出路径。外层输出协议使用本任务初始 checkpoint 的版本，保证 Codex 可解析；文件 payload 可含协议样例。
+
+# Codex 一致性核验线索
+
+候选 Notes/TEMPLATES/REVIEW_REQUEST.md 的“文件结构与 allowlist 边界沿用原始请求”需要与当前 PRO_OUTPUT_PROTOCOL 中“本轮请求 target_files 是 allowlist”一致。R02 有时缩小目标集合；请判断并明确本轮 REVIEW_REQUEST.target_files 控制实际输出路径，原始请求提供内容与结构授权基线，两个范围共同约束。以完整文件实际语义为准，修订此处时保持正向表达。
+
+本轮外层协议固定为提交 2baac48c234bb378072e9e38a504b38e2edffff7 的 Notes/PRO_OUTPUT_PROTOCOL.md。候选新协议按本轮 Browser 的材料 commit 读取并审查。

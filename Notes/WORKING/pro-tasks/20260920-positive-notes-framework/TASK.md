@@ -1,7 +1,7 @@
 ---
 task_id: 20260920-positive-notes-framework
 route: pro-write-review
-status: PREPARE
+status: R01_APPLIED
 target_files:
   - AGENTS.md
   - Notes/AGENTS.md
@@ -79,4 +79,4 @@ automation:
 
 # 当前阶段
 
-PREPARE。初始规则采用 Notes Pro-First 1.1；本轮运行协议和权限按初始 checkpoint 执行，新文本供后续任务采用。
+R01_APPLIED。真实 6 Pro 已返回全部 15 个完整文件；binding、固定提交、文件集合及 allowlist 验证通过。15 份 Markdown 已通过检查。正在提交 R01，随后用全新 Pro 会话执行 R02。当前任务按初始冻结协议执行。

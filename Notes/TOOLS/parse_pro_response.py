@@ -34,6 +34,35 @@ def safe_path(raw: str) -> str:
     return path.as_posix()
 
 
+def protocol_line_indices(lines: list[str], binding_id: str) -> list[int]:
+    """Locate protocol lines outside the fenced contents of file blocks.
+
+    Files may themselves document this protocol. Their examples remain opaque
+    until the exact opening fence is closed; main() validates the file headers
+    and block boundaries separately.
+    """
+    indices: list[int] = []
+    in_file_header = False
+    fence: str | None = None
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if fence is not None:
+            if stripped == fence:
+                fence = None
+            continue
+        indices.append(index)
+        if stripped == f"BEGIN_FILE::{binding_id}":
+            in_file_header = True
+        elif in_file_header:
+            match = re.fullmatch(r"(`{5,})(?:markdown)?", stripped)
+            if match:
+                fence = match.group(1)
+                in_file_header = False
+            elif stripped == f"END_FILE::{binding_id}":
+                in_file_header = False
+    return indices
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
@@ -91,7 +120,8 @@ def main() -> int:
             raise ValueError(f"Binding mismatch: {json.dumps(mismatches, ensure_ascii=False)}")
         report["binding_verified"] = True
 
-        status_lines = [i for i, line in enumerate(lines) if line.strip().startswith("PRO_STATUS:")]
+        protocol_indices = protocol_line_indices(lines, binding_id)
+        status_lines = [i for i in protocol_indices if lines[i].strip().startswith("PRO_STATUS:")]
         if len(status_lines) != 1:
             raise ValueError(f"Expected exactly one PRO_STATUS, found {len(status_lines)}")
         status_index = status_lines[0]
@@ -102,7 +132,7 @@ def main() -> int:
         report["status"] = status
 
         end_marker = f"END_RESPONSE::{binding_id}"
-        end_indices = [i for i, line in enumerate(lines) if line.strip() == end_marker]
+        end_indices = [i for i in protocol_indices if lines[i].strip() == end_marker]
         if len(end_indices) != 1:
             raise ValueError(f"Expected exactly one {end_marker}, found {len(end_indices)}")
         response_end = end_indices[0]
@@ -167,14 +197,17 @@ def main() -> int:
                 raise ValueError("REVIEW_PASS must not include file or message blocks")
 
         else:
+            if any(lines[i].strip() == f"BEGIN_FILE::{binding_id}" for i in protocol_indices):
+                raise ValueError(f"{status} must not include file blocks")
             begin_message = f"BEGIN_MESSAGE::{binding_id}"
             end_message = f"END_MESSAGE::{binding_id}"
-            starts = [i for i, line in enumerate(lines) if line.strip() == begin_message]
+            starts = [i for i in protocol_indices if lines[i].strip() == begin_message]
             if len(starts) != 1:
                 raise ValueError(f"{status} requires one message block")
             message_start = starts[0]
             message_end = next(
-                (i for i in range(message_start + 1, response_end) if lines[i].strip() == end_message),
+                (i for i in protocol_indices
+                 if message_start < i < response_end and lines[i].strip() == end_message),
                 None,
             )
             if message_end is None:
