@@ -1,7 +1,7 @@
 ---
 task_id: 20260920-binary-field-introduction
 route: pro-write-review
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 
@@ -69,6 +69,9 @@ Framework: Notes Pro-First 1.2。路线 pro-write-review，TASK independent 对�
 
 # 当前阶段
 
-R01_APPLIED。真实 ChatGPT 6 Pro 于作者会话 https://chatgpt.com/c/6aafff4d-07cc-83e8-a65d-19fdc2a77f5e 返回 COMPLETE。绑定基于 a71da739c7833a414130e48d3d2f3ab712427d49，完整稿已验证、完成 7 处纯排版修复并应用。下一步：R01 应用与审查请求提交推送后，在全新 Pro 会话执行 R02。
+DONE。R01 全文已在 `388ef09d9ca6be046141bdc3709d8e622b1290ee` 应用并成功推送；全新真实 ChatGPT 6 Pro R02 基于同一 checkpoint 返回 REVIEW_PASS，完整绑定与结束标记核验通过。最终 Obsidian 格式、链接、文件覆盖、Git diff 与用户已有材料保持检查通过。
 
-首次尝试中断及捕获格式诊断见 FAILURES/；正式文件变更仅原目标。
+作者会话：https://chatgpt.com/c/6aafff4d-07cc-83e8-a65d-19fdc2a77f5e 。
+审查会话：https://chatgpt.com/c/6ab004a7-346c-83ee-8808-ec9323cccbca 。
+
+正式文件变更仅原目标；任务材料及失败现场保留，成功临时材料按 errors-only 清理。完整交付结果见 FINAL_REPORT.md。主分支尚未合并，等待用户决定是否整合。

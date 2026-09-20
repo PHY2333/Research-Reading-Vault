@@ -31,11 +31,24 @@ Framework: Notes Pro-First 1.2
 R01 完整稿已从 staging 应用到原路径。其教学与数学成文全部来自真实 ChatGPT 6 Pro。REVIEW_REQUEST.md 已准备全新 Pro 独立审查。独立 Codex 子代理确认 UTF-8/文件首尾、3 个 wikilink、2 个 PDF 相对链接及 5 个脚注均完整，未发现占位符、控制字符或协议内容泄漏。
 
 - git_diff_check: pass
-- application_commit: 本报告所在的 R01 应用提交，完整 SHA 在 FINAL_REPORT 记录
+- application_commit: 388ef09d9ca6be046141bdc3709d8e622b1290ee
 - remote: main
-- push_result: pending
+- push_result: success；main/codex/20260920-binary-field-introduction
 - review_required: independent R02
 
 ## 保留与下一步
 
 原始异常捕获保留在 FAILURES/R01-capture.raw.md，来源控制字符导致首轮中断的记录也保留。成功规范化响应及 staging 在检查与 push 完成后清理。下一步：应用提交成功推送后，使用该 checkpoint 发送 R02。
+
+## R02 独立审查与最终检查
+
+- review_checkpoint_commit: 388ef09d9ca6be046141bdc3709d8e622b1290ee
+- Pro status: REVIEW_PASS
+- binding_verified: true（37790b096004485283036de4e8385f93）
+- response_complete: true
+- review_application: 无需正文修订
+- final_Obsidian_math_check: PASS
+- git_diff_check: PASS
+- unchanged_scope_verified: true（最终 SHA-256 再核验一致）
+- current_stage: DONE
+- next_action: 本报告与 FINAL_REPORT 提交推送，清理本任务成功临时材料；主分支整合等待用户决定。
