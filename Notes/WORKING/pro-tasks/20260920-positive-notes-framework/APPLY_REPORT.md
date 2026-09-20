@@ -27,3 +27,19 @@
 ## Parser compatibility
 
 Notes/TOOLS/parse_pro_response.py now ignores protocol samples inside bound file payload fences when scanning outer status/end markers. Binding and path validation retained. Message states reject file blocks. 23 temporary regression cases, payload preservation, syntax and whitespace checks passed. Runtime: bundled Python 3.12.
+
+## R02 independent review
+
+- request_id: R02
+- checkpoint_commit: bf420dfbde896cff46a4fc4936048eba61be50b7
+- reviewer_session: https://chatgpt.com/c/6aafe56b-e950-83ee-a9b1-a4ed1c2a44a8
+- Pro status: COMPLETE
+- binding_verified: true
+- full_review_scope: all 15 target files
+- revised_file: Notes/TEMPLATES/REVIEW_REQUEST.md
+- substantive_revision: current R02 target_files controls output paths; original R01 request retains content/structure authorization; each revision satisfies both constraints. Reduced R02 targets preserve remaining checkpoint files.
+- transport_normalization: one copied outer fence expanded from 4 to 8 backticks; file payload unchanged
+- initial_and_final_math_check: pass
+- Codex_content_or_math_edits: none
+- remaining_targets: preserved byte-for-byte from R01 application
+- git_diff_check: pass
