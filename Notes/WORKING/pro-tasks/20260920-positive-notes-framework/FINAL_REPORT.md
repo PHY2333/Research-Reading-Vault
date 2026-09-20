@@ -14,7 +14,10 @@
 - review_result: COMPLETE (independent Pro reviewed all 15 targets and revised one template)
 - review_application_commit: 08b09aec22acb57c5e1e550f864cb6bec2be7249
 - review_session: https://chatgpt.com/c/6aafe56b-e950-83ee-a9b1-a4ed1c2a44a8
-- merge_to_main: not performed
+- merge_to_main: performed (user-authorized fast-forward)
+- merged_into: main
+- main_before_merge: 32105e4418fd0d82114b36539a2ac06ff364d234
+- merged_task_tip: fe4db5a6d5369f50114831719eeb8c515d490f04
 
 ## 交付内容与放置理由
 
@@ -64,4 +67,8 @@ R02 修订使本轮 REVIEW_REQUEST.target_files 作为输出路径 allowlist，�
 - 任务目录：创建并保留请求、分析、应用和最终报告。
 - 成功原始响应与 staging：应用检查和推送后已清理；临时执行辅助材料在最终交付前清理。
 - 本任务新增待核对、TODO：补引用、待补推导：无。文风改善的实际效果在后续 Notes 写作中继续观察。
-- 下一步：用户查看任务分支，按需要决定是否合并 main；后续 Notes 任务可直接使用新框架。
+- 下一步：后续 Notes 任务直接使用 main 中的新框架。
+
+## 用户授权合并 main
+
+用户于 2026-09-20 明确回复“合并main”。已获取远端最新状态并确认本地 main 与远端 main 一致，将任务分支的四个提交无冲突快进合并到 main。合并范围复核通过；已有 Papers/SOURCES.md 修改及三份未跟踪 PDF 在切换与合并前后逐字节一致。原有框架验证结果继续适用，本次仅增加合并记录。任务目录和任务分支保留，文献、翻译、正式笔记与索引范围保持原状。合并后的 main 连同本条记录同步至既有远端 main 的 main 分支。
