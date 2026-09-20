@@ -1,3 +1,19 @@
+BINDING_OK
+task_id: 20260920-binary-field-introduction
+request_id: R01
+binding_id: 88b1136de6724a67926c5ccbd1bfc2ed
+based_on_repository: PHY2333/Research-Reading-Vault
+based_on_branch: codex/20260920-binary-field-introduction
+based_on_commit: a71da739c7833a414130e48d3d2f3ab712427d49
+END_BINDING
+
+PRO_STATUS: COMPLETE
+
+BEGIN_FILE::88b1136de6724a67926c5ccbd1bfc2ed
+path: Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
+mode: replace
+
+```markdown
 # 二元扩域
 
 构造一个扩域，可以从添入一个方程的解开始：保留原来域中的元素和加乘法，再加入一个原来没有的新元素。新元素满足的方程会规定它的高次幂怎样化简，从而让扩大后的算术仍然可以计算。
@@ -229,7 +245,7 @@ $$
 则这些类组成的集合写作
 
 $$
-K_f=\mathbb F_2[x]\,/\,(f).
+K_f=\mathbb F_2[x]/(f).
 $$
 
 这里的商记号表示按上述关系合并多项式。它本身已经构造出一个新集合，不需要先在某个更大的域中找到 $f$ 的根。
@@ -401,7 +417,7 @@ $$
 
 $$
 \boxed{
-\mathbb F_2[x]\,/\,(f)\text{ 是域}
+\mathbb F_2[x]/(f)\text{ 是域}
 \quad\Longleftrightarrow\quad
 f\text{ 不可约}
 }.
@@ -410,7 +426,7 @@ $$
 前一节的 $x^2+x+1$ 在 $0,1$ 处都不为零。二次多项式若可约，必有一次因子，也就有底域中的根；因此它不可约。由它得到的四元素域就是
 
 $$
-\mathbb F_4=\mathbb F_2[x]\,/\,(x^2+x+1),
+\mathbb F_4=\mathbb F_2[x]/(x^2+x+1),
 \qquad \alpha=[x].
 $$
 
@@ -427,7 +443,7 @@ $$
 它在 $0,1$ 处同样都取值 $1$。三次多项式若可约，至少有一个一次因子，因此这个 $f$ 也不可约。于是
 
 $$
-\mathbb F_2[x]\,/\,(x^3+x+1)
+\mathbb F_2[x]/(x^3+x+1)
 $$
 
 是一个八元素域。在这个例子中仍记 $\alpha=[x]$，其关系为
@@ -490,7 +506,7 @@ $s=1$ 时得到底域本身；$s>1$ 时得到真正较大的域。
 此后的一般论述使用 $K=\mathbb F_{2^s}$；未另作说明的具体算例仍使用
 
 $$
-\mathbb F_4=\mathbb F_2[x]\,/\,(x^2+x+1),
+\mathbb F_4=\mathbb F_2[x]/(x^2+x+1),
 \qquad \alpha^2=\alpha+1.
 $$
 
@@ -1381,7 +1397,7 @@ $$
 >
 > 让一个元素通过左乘作用于整个代数，再取这个线性映射的矩阵，称为正则表示。有限维含幺 $\mathbb F_2$-代数也可以这样表示；结合律保证乘法对应矩阵复合，作用于单位元又保证表示是单射。域的额外性质保证这里每个非零乘法矩阵都可逆。
 >
-> [[Lifted product code]] 中的循环系数环 $\mathbb F_2[x]\,/\,(x^\ell-1)$ 也使用相关的块表示。当 $\ell>1$ 时，$x^\ell-1$ 有一次真因子 $x+1$，因此这个环不是二元扩域。若还要把环内的反对合——反转乘法次序的对合——对应为二进制转置，需要对所选表示另行验证相容性；保留乘法本身并不自动给出这种对应。
+> [[Lifted product code]] 中的循环系数环 $\mathbb F_2[x]/(x^\ell-1)$ 也使用相关的块表示。当 $\ell>1$ 时，$x^\ell-1$ 有一次真因子 $x+1$，因此这个环不是二元扩域。若还要把环内的反对合——反转乘法次序的对合——对应为二进制转置，需要对所选表示另行验证相容性；保留乘法本身并不自动给出这种对应。
 
 ### 7.5 两个乘数都变化时，出现双线性项
 
@@ -1983,7 +1999,7 @@ $s=1$ 时唯一的坐标保持不变。
 例如，在
 
 $$
-\mathbb F_8=\mathbb F_2[x]\,/\,(x^3+x+1)
+\mathbb F_8=\mathbb F_2[x]/(x^3+x+1)
 $$
 
 中，$\alpha=[x]$ 满足 $\alpha^3=\alpha+1$。非零乘法群的阶为素数 $7$，且 $\alpha\ne1$，所以 $\alpha$ 的阶为 $7$，是本原元。但
@@ -2013,3 +2029,7 @@ $$
 [^S008-basis]: Anqi Gong, Christopher A. Pattison, Patrick Rall and Adam Wills, *Magic State Distillation via Codes over Binary Extension Fields*, S008，arXiv:2608.09727v1，85 页，印刷页码与 PDF 页序一致。[本地 PDF](../../Papers/S008_2026_Gong_magic_state_distillation_binary_extension_fields.pdf)。§2.2，pp.11–13：有限域、迹与范数；§3.1，pp.13–16：扩域寄存器与比特实现；p.15 式 (11)、脚注 8：基坐标、自对偶基与矩阵二元化的语境；pp.15–16 Remark 3.4：加法、固定非零常数乘法、未知输入乘法与 Frobenius。本文的一般同基乘法矩阵采用迹对偶公式；正规基的使用明确包含线性无关条件。
 
 [^S008-phase]: S008，arXiv:2608.09727v1，§3.2.1，pp.16–17。[本地 PDF](../../Papers/S008_2026_Gong_magic_state_distillation_binary_extension_fields.pdf)。式 (12)–(13)：三寄存器迹相位及其比特展开；Claim 3.5、式 (14)–(15)：自对偶基中的 Hadamard 变换与乘法实现。本文由同一求和计算写出任意初始目标 $c$ 的完整可逆操作 $|x,y,c\rangle\mapsto|x,y,c+xy\rangle$。
+```
+
+END_FILE::88b1136de6724a67926c5ccbd1bfc2ed
+END_RESPONSE::88b1136de6724a67926c5ccbd1bfc2ed

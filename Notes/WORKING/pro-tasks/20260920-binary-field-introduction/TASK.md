@@ -1,7 +1,7 @@
 ---
 task_id: 20260920-binary-field-introduction
 route: pro-write-review
-status: PREPARE
+status: R01_APPLIED
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 
@@ -69,4 +69,6 @@ Framework: Notes Pro-First 1.2。路线 pro-write-review，TASK independent 对�
 
 # 当前阶段
 
-PREPARE（R01 第二次作者尝试）。首次请求 checkpoint `9e68c6925c2e1c6491d86fac68bd9862062837be` 已推送；材料预检发现 PDF 机械摘取包含 NUL/C0 控制字符，已在 Pro 读取阶段中止，未应用正式文件。具体保留记录见 FAILURES/R01-attempt1-interrupted.md。已修正传输格式、更新 binding，准备推送新 checkpoint 并用全新 Pro 会话执行第二次作者尝试。
+R01_APPLIED。真实 ChatGPT 6 Pro 于作者会话 https://chatgpt.com/c/6aafff4d-07cc-83e8-a65d-19fdc2a77f5e 返回 COMPLETE。绑定基于 a71da739c7833a414130e48d3d2f3ab712427d49，完整稿已验证、完成 7 处纯排版修复并应用。下一步：R01 应用与审查请求提交推送后，在全新 Pro 会话执行 R02。
+
+首次尝试中断及捕获格式诊断见 FAILURES/；正式文件变更仅原目标。
