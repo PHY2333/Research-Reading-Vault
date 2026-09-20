@@ -69,4 +69,4 @@ Framework: Notes Pro-First 1.2。路线 pro-write-review，TASK independent 对�
 
 # 当前阶段
 
-PREPARE。已读取活动规则、完整目标、来源登记和相关 S008 页。准备 checkpoint 后发送 R01。
+PREPARE（R01 第二次作者尝试）。首次请求 checkpoint `9e68c6925c2e1c6491d86fac68bd9862062837be` 已推送；材料预检发现 PDF 机械摘取包含 NUL/C0 控制字符，已在 Pro 读取阶段中止，未应用正式文件。具体保留记录见 FAILURES/R01-attempt1-interrupted.md。已修正传输格式、更新 binding，准备推送新 checkpoint 并用全新 Pro 会话执行第二次作者尝试。

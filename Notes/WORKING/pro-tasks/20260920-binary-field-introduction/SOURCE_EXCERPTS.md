@@ -6,7 +6,7 @@
 
 PDF SHA-256：`af8d5cf4bb56206b9ac6aa50481476916bd26d8c914009e2c5f9e56f48961eae`
 
-以下 PDF 文本逐页由 pypdf 提取，保留原始文本而未改写数学；上下标与分式可能线性化。译本选段按当前 UTF-8 文件逐行复制。页 15–16 已由 Codex 渲染核对；图形请查看原 PDF/既有截图。此文件是任务来源材料，不是正式笔记。
+以下 PDF 文本逐页由 pypdf 提取，保留原始文本而未改写数学；上下标与分式可能线性化。PDF 字体映射产生的 C0 控制字符已逐字符转写为可见的 `\uXXXX`，未猜测其数学含义；相关公式对照所附译本及原 PDF。译本选段按当前 UTF-8 文件逐行复制。页 15–16 已由 Codex 渲染核对；图形请查看原 PDF/既有截图。此文件是任务来源材料，不是正式笔记。
 
 ## PDF page 1
 
@@ -177,13 +177,13 @@ this identity that the CCZ state (or gate) can be unitarily synthesized using7Tg
 CNOT operations, by considering variousUm,a gates withn= 3andm= 3. Becausem >1, we must
 differentiate between regular integer addition and addition modulo2. Explicitly, we have
 exp
-2πi
+\u00122πi
 2m (x1 +x 2)
-
+\u0013
 ̸= exp
-2πi
+\u00122πi
 2m (x1 ⊕x 2)
-
+\u0013
 form >1.(5)
 This is unlike when we consider products of CCZ gates like the TOF#gate, in which case addition
 in the phase polynomial is both regular integer addition and modulo2addition. For example, for the
@@ -270,9 +270,9 @@ where the additivity follows from the fact that(a+b)p =a p +b p (and hence(a+b) 
 +b pi
 ) for
 a, b∈F ps since
- p
+\u0000p
 i
-
+\u0001
 = p!
 i!(p−i)! ≡0 modpfori= 1,2. . . , p−1. We have tr Fqm /Fq(αq) =tr Fqm /Fq(α).
 A further, less trivial fact, is that trFqm /Fq(α) = 0if and only ifα=β q −βfor someβ∈F qm.
@@ -681,9 +681,9 @@ t
  X
 z
 (−1)tr
- 
+\u0000
 z(xy+t)
-!
+\u0001!
 |t⟩
 =|xy⟩,
 where in the last step, we have used

@@ -5,7 +5,7 @@ request_type: rewrite
 route: pro-write-review
 output_mode: full-file
 review_policy: fresh
-binding_id: e512900d30b346609e8e729f5afae841
+binding_id: 88b1136de6724a67926c5ccbd1bfc2ed
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 ---
