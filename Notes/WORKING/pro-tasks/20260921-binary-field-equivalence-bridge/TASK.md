@@ -1,7 +1,7 @@
 ---
 task_id: 20260921-binary-field-equivalence-bridge
 route: codex-only
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 review_policy: none
@@ -37,4 +37,4 @@ Framework: Notes Pro-First 1.2。应用报告和最终报告沿用活动流程�
 
 # 当前阶段
 
-局部修改已完成。Codex 子代理独立复读 §2 末至 §3.3，确认构造逻辑、数学和接口通过；这是本地复核，不是 Pro 审查。Obsidian 检查、git diff --check、范围逐字比较和无关文件 SHA-256 校验通过，等待应用提交推送。
+局部修改已完成。Codex 子代理独立复读 §2 末至 §3.3，确认构造逻辑、数学和接口通过；这是本地复核，不是 Pro 审查。Obsidian 检查、git diff --check、范围逐字比较和无关文件 SHA-256 校验通过，已在 447743b94510881c95ed7ec6216de730ccf750c4 提交并成功推送任务分支。主分支未合并。
