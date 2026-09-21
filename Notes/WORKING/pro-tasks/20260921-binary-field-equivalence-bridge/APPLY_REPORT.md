@@ -32,4 +32,4 @@ Framework: Notes Pro-First 1.2
 - remote: main（https://github.com/PHY2333/Research-Reading-Vault）
 - raw_response / staging / failures: 无。
 - temporary_material: 仅本任务无关文件哈希基线，完成推送后清理。
-- merge_to_main: 未执行。
+- merge_to_main: 已按用户后续明确授权完成快进合并并推送；详见 FINAL_REPORT.md。

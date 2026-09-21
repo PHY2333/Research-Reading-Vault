@@ -33,8 +33,12 @@ automation:
 
 原文件继续承担 canonical ownership；不新增前置笔记，不调整索引、来源登记或翻译。已有 Papers/SOURCES.md 修改及 S011 主文/补充、S012 三份未跟踪 PDF 原样保留。
 
-Framework: Notes Pro-First 1.2。应用报告和最终报告沿用活动流程；正文角色例外依据上方最新用户指令。任务分支连续完成检查、commit/push；主分支合并仍需用户决定。
+Framework: Notes Pro-First 1.2。应用报告和最终报告沿用活动流程；正文角色例外依据上方最新用户指令。任务分支连续完成检查、commit/push；主分支合并的后续授权与结果见下文。
 
 # 当前阶段
 
-局部修改已完成。Codex 子代理独立复读 §2 末至 §3.3，确认构造逻辑、数学和接口通过；这是本地复核，不是 Pro 审查。Obsidian 检查、git diff --check、范围逐字比较和无关文件 SHA-256 校验通过，已在 447743b94510881c95ed7ec6216de730ccf750c4 提交并成功推送任务分支。主分支未合并。
+局部修改已完成。Codex 子代理独立复读 §2 末至 §3.3，确认构造逻辑、数学和接口通过；这是本地复核，不是 Pro 审查。Obsidian 检查、git diff --check、范围逐字比较和无关文件 SHA-256 校验通过，已在 447743b94510881c95ed7ec6216de730ccf750c4 提交并成功推送任务分支。用户后续已授权合并，main 已快进到 443ef4a7841e65c91b61ae8d5f7c9653daaa0ea2 并成功推送。
+
+# 后续主分支合并
+
+2026-09-21，用户明确要求“合并到main”。fetch 后确认本地 main 与远端 main/main 一致，任务分支领先两次提交，可 fast-forward。已从 12c08ffa870a349dc3ba840cf53235acdb0771dd 快进到 443ef4a7841e65c91b61ae8d5f7c9653daaa0ea2，并成功推送 main。原 automation.merge_to_main: false 保留为局部修改阶段的历史配置，本轮执行依据为上述最新明确授权。

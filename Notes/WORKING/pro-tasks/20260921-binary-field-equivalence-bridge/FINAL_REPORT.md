@@ -15,9 +15,9 @@ Framework: Notes Pro-First 1.2
 - Codex_format_repair_summary: 无需额外格式修复。
 - final_Obsidian_math_check: PASS
 - git_diff_check: PASS
-- push_result: 正文应用提交已成功推送任务分支；本报告随收尾提交推送。
+- push_result: 任务分支交付已推送；用户授权的 main 快进整合亦已成功推送。
 - unresolved_items: 无正文待办。
-- merge_to_main: not performed
+- merge_to_main: completed；用户于 2026-09-21 授权，main 快进到 443ef4a7841e65c91b61ae8d5f7c9653daaa0ea2 并成功推送。
 
 ## 内容与范围
 
@@ -29,14 +29,14 @@ Framework: Notes Pro-First 1.2
 
 ## 任务材料与审计
 
-任务目录：Notes/WORKING/pro-tasks/20260921-binary-field-equivalence-bridge/。保留 TASK.md、APPLY_REPORT.md、FINAL_REPORT.md。根据最新用户授权未创建 Pro 请求、响应、staging 或失败记录；未向已打开的 ChatGPT 页面发送内容，页面已关闭。仅创建的临时哈希基线在最终推送后清理。
+任务目录：Notes/WORKING/pro-tasks/20260921-binary-field-equivalence-bridge/。保留 TASK.md、APPLY_REPORT.md、FINAL_REPORT.md。根据最新用户授权未创建 Pro 请求、响应、staging 或失败记录；未向已打开的 ChatGPT 页面发送内容，页面已关闭。局部修改阶段的临时哈希基线已清理；合并阶段重新校验四份无关文件，SHA-256 保持不变，临时基线在收尾推送后清理。
 
 ### 流程回执
 
 - `task_id`：20260921-binary-field-equivalence-bridge
-- 当前阶段：DONE（任务分支）
-- 已完成：§3.1 局部修改、本地独立复核、格式与保留范围检查、提交及推送。
-- 阻塞或待确认：无修改阻塞；主分支尚未合并。
-- 下一位执行者：用户（仅后续整合决定）。
-- 下一步唯一动作：如需整合，授权合并到 main。
-- 用户可直接回复：合并到 main。
+- 当前阶段：DONE（main 已合并并推送）
+- 已完成：§3.1 局部修改、本地独立复核、格式与保留范围检查、提交及推送，以及用户授权的 main 快进整合。
+- 阻塞或待确认：无。
+- 下一位执行者：无。
+- 下一步唯一动作：无，任务已完成。
+- 用户可直接回复：无需操作。
