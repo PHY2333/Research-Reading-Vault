@@ -1,7 +1,7 @@
 ---
 task_id: 20260921-binary-field-bezout-backsub
 route: codex-only
-status: R01_APPLIED
+status: DONE
 target_files:
   - Notes/08-Binary Extension Field Non Clifford Module/二元扩域.md
 review_policy: none
@@ -39,4 +39,4 @@ automation:
 
 Framework: Notes Pro-First 1.2。使用活动写作与格式规范，依最新用户指令直接成文；不需要 Pro 请求、远程绑定或响应。
 
-局部正文已完成，本地独立 Codex 复核通过。一般边界与算例已核验；工作树及仅含本任务修改的暂存版本均通过 Obsidian 检查，暂存 diff 检查通过。等待提交推送及最终回执。
+局部正文已完成，本地独立 Codex 复核通过。一般边界与算例已核验；工作树及仅含本任务修改的暂存版本均通过 Obsidian 检查，暂存 diff 检查通过。正文已在 9cbdeeb779fd1bd7101b239337d940b69b1449ec 提交并成功推送任务分支，最终结果见 FINAL_REPORT.md。
